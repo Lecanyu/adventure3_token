@@ -81,6 +81,43 @@
 						"type": "address"
 					},
 					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "to",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "string",
+						"name": "log_text",
+						"type": "string"
+					}
+				],
+				"name": "BeforeTokenTransfer",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "operator",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "from",
+						"type": "address"
+					},
+					{
 						"indexed": false,
 						"internalType": "uint256",
 						"name": "amount",
@@ -645,7 +682,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"test_erc777_token.sol": "GLDToken"
+			"erc777_token_example.sol": "GLDToken"
 		},
 		"evmVersion": "london",
 		"libraries": {},
@@ -723,12 +760,12 @@
 				"dweb:/ipfs/QmNhvk3jmfgquVki2V7gNmTWTMeNwEPCnetybeBntQtsyJ"
 			]
 		},
-		"test_erc777_token.sol": {
-			"keccak256": "0xd2044f457a29d1e622244ab8ffa81589bd2709a6f20cfcb1f52a6b24629b6c38",
+		"erc777_token_example.sol": {
+			"keccak256": "0xffe55530b84cd4eb48aec71178aa1b2862124249d7a18c2420aa5ac41d128222",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://fe6c27413d63ec4cc063574badb5a3690591a2b4f803f2935fc5fdea6d46bc84",
-				"dweb:/ipfs/Qmf92CStqLJZUHNW4SDjji1sFTGUrQuiLJy12kwNrnd7Kg"
+				"bzz-raw://1b66aebf4a6059e9a0c80fe42b991b68f44037d9fb272b54970b6fec695d6cd9",
+				"dweb:/ipfs/QmVDscwiVh6sQkTeSz4FvH8sGv4zRF3kGqwQEPoKTWEU1X"
 			]
 		}
 	},
