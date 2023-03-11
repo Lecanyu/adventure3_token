@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.17+commit.8df45f5f"
+		"version": "0.8.18+commit.87f61d96"
 	},
 	"language": "Solidity",
 	"output": {
@@ -578,6 +578,26 @@
 			}
 		],
 		"devdoc": {
+			"events": {
+				"Approval(address,address,uint256)": {
+					"details": "Emitted when the allowance of a `spender` for an `owner` is set by a call to {approve}. `value` is the new allowance."
+				},
+				"AuthorizedOperator(address,address)": {
+					"details": "Emitted when `operator` is made operator for `tokenHolder`."
+				},
+				"Burned(address,address,uint256,bytes,bytes)": {
+					"details": "Emitted when `operator` destroys `amount` tokens from `account`. Note that some additional user `data` and `operatorData` can be logged in the event."
+				},
+				"Minted(address,address,uint256,bytes,bytes)": {
+					"details": "Emitted when `amount` tokens are created by `operator` and assigned to `to`. Note that some additional user `data` and `operatorData` can be logged in the event."
+				},
+				"RevokedOperator(address,address)": {
+					"details": "Emitted when `operator` is revoked its operator status for `tokenHolder`."
+				},
+				"Transfer(address,address,uint256)": {
+					"details": "Emitted when `value` tokens are moved from one account (`from`) to another (`to`). Note that `value` may be zero."
+				}
+			},
 			"kind": "dev",
 			"methods": {
 				"allowance(address,address)": {
@@ -647,7 +667,7 @@
 		"compilationTarget": {
 			"adx_token.sol": "ADXToken"
 		},
-		"evmVersion": "london",
+		"evmVersion": "paris",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -724,11 +744,11 @@
 			]
 		},
 		"adx_token.sol": {
-			"keccak256": "0x3ae3c395567b451c11f62e21d3f91743c595ae3a408c0ee1a9f744c0008de729",
+			"keccak256": "0x07f90391830f83389352836d4d65d272363bfd21a99209d17b7ff2fadf4c6824",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://792cfd179a4a5acfcd14ef7f24e9e313f2b5662409841f0902f9a96df4737507",
-				"dweb:/ipfs/QmU2Yb5e43FtfdqhcY9GFmAqDXDAT6ubrVw4h3tNkheArg"
+				"bzz-raw://63ed310bc4e0acbc36d8bed4f39cb4e0390c13cdbf73f3cf25ce78a8016f060c",
+				"dweb:/ipfs/QmdJ8oisFvL1dcTySsEuLduph3m7pfM2519jgvkYgvo5fK"
 			]
 		}
 	},
