@@ -316,7 +316,26 @@
 						"type": "uint256"
 					}
 				],
-				"name": "_groupId2MemberIds",
+				"name": "_groupId2MemberAddrs",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "_groupId2NFTAddr",
 				"outputs": [
 					{
 						"internalType": "address",
@@ -360,6 +379,25 @@
 						"internalType": "string",
 						"name": "",
 						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "_pID2Reward",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
@@ -527,6 +565,48 @@
 				"outputs": [],
 				"stateMutability": "payable",
 				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "groupId",
+						"type": "uint256"
+					}
+				],
+				"name": "getCurrentJoinGroupPrice",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "price",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "groupId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "affiliateTaskID",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string",
+						"name": "playerName",
+						"type": "string"
+					}
+				],
+				"name": "joinGroup",
+				"outputs": [],
+				"stateMutability": "payable",
+				"type": "function"
 			}
 		],
 		"devdoc": {
@@ -644,6 +724,14 @@
 				"dweb:/ipfs/Qmct36zWXv3j7LZB83uwbg7TXwnZSN1fqHNDZ93GG98bGz"
 			]
 		},
+		"@openzeppelin/contracts/utils/math/SafeMath.sol": {
+			"keccak256": "0x0f633a0223d9a1dcccfcf38a64c9de0874dfcbfac0c6941ccf074d63a2ce0e1e",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://864a40efcffdf408044c332a5aa38ec5618ed7b4eecb8f65faf45671bd6cdc65",
+				"dweb:/ipfs/QmQJquTMtc6fgm5JQzGdsGpA2fqBe3MHWEdt2qzaLySMdN"
+			]
+		},
 		"degen/DegenEvents.sol": {
 			"keccak256": "0xd64551ea1c00c56ca59e8b56962b7060195ddbcc49a929eac97265d883961a61",
 			"license": "MIT",
@@ -653,11 +741,19 @@
 			]
 		},
 		"degen/DegenMaster.sol": {
-			"keccak256": "0x70b5f8072432c09ffd4cecd462fcd10d9d57818a956550695d0e75b5e547b6dd",
+			"keccak256": "0x66282026e96b0d476a5d4046db9c87b60d90e4fc3a8403ebfef00c7d1580ad0b",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://0ea48b96a2fdcc42369c4db32275c35b410bff694460d08646fa344eddd633a6",
-				"dweb:/ipfs/QmQZKhJ5wx4fpwk32Sf1SZu5vfm8d8VxZTDtRyopMVqxah"
+				"bzz-raw://f22d1e9b8694ab780c017ce8c1276ec2b16eb668732c4f976b6e8d7d53190075",
+				"dweb:/ipfs/QmV4du8ThB6TNsyw3UZdWkSqiiu514js8H9yzrwuf4mbcs"
+			]
+		},
+		"degen/DegenTicketPrice.sol": {
+			"keccak256": "0xbcbcfda116cd957d128a3da94e2889f51e17d33de2922c2a3120920ae8bd1165",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://3df84c1ba9871039314a4bbc55d2e55023ba734f9d7d7db327fa7d245f082848",
+				"dweb:/ipfs/QmYj5BtxecXXqdKkV6f8fGb24txS8vyuf875YtbFtW4BxT"
 			]
 		},
 		"degen/NFT/GroupNFT.sol": {

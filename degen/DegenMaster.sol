@@ -3,9 +3,11 @@ pragma solidity ^0.8.12;
 
 import "./DegenEvents.sol";
 import "./NFT/GroupNFT.sol";
+import "./DegenTicketPrice.sol";
 import "../utils/StringUtils.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
 contract DegenMaster is DegenEvents {
     using Counters for Counters.Counter;
@@ -14,19 +16,24 @@ contract DegenMaster is DegenEvents {
     // PARAMS
     //****************
     uint256 constant private _taskCreateMinFee = 10 * 10**18;
-    uint256 constant private _groupCreateMinFee = 0.1 * 10**18;
+    uint256 constant private _groupCreateMinFee = 1 * 10**18;
+    uint256 constant private _a = 3;        // 队长的队伍门票分红比例（%）
+    uint256 constant private _b = 50;       // 门票金额投入奖池的比例（%）
+    uint256 constant private _c = 10;       // 队长的最终奖池收益比例（%）
+    uint256 constant private _denominator = 100;
+
 
     //****************
     // PLAYER DATA 
     //****************
     mapping (address => string) public _pID2Name;
+    mapping (address => uint256) public _pID2Reward;
 
 
     //****************
     // TASK DATA 
     //****************
     Counters.Counter private _taskCounter;
-    Counters.Counter private _groupCounter;
 
     struct TaskDetails{
         string taskName;
@@ -40,7 +47,7 @@ contract DegenMaster is DegenEvents {
 
         uint256 totalRewardPool;
         uint256 totalGroupNumber;
-        uint256 totalPeopleNumber;
+        uint256 totalPeopleNumber;      // count the all people involved in this task
     }
 
     mapping (uint256 => address) public _taskId2OwnerAddr;       // task id => task owner
@@ -60,15 +67,31 @@ contract DegenMaster is DegenEvents {
         uint256 createTimeStamp;
 
         uint256 ownerAmountPaid;    // maybe init group creation fee or the price of leader NFT
-        uint256 totalPeopleNumber;
+        uint256 totalPeopleNumber;  // not count the group leader
     }
 
     mapping (uint256 => address) public _groupId2OwnerAddr;
     mapping (uint256 => GroupDetails) public _groupId2Details;
-    mapping (uint256 => address[]) public _groupId2MemberIds;    // group id => member id list
+    mapping (uint256 => address[]) public _groupId2MemberAddrs;    // group id => member addr list
+    mapping (uint256 => address) public _groupId2NFTAddr;           // group id => NFT addr
 
     constructor() {}
 
+    //****************
+    // utils
+    //****************
+    function getCurrentJoinGroupPrice(uint256 groupId) 
+        public
+        view
+        returns (uint256 price)
+    {
+        // get current group member number
+        uint256 grpMemNum = _groupId2MemberAddrs[groupId].length;
+
+        // isPayEnoughForEnterGroup
+        uint256 ticketPrice = DegenTicketPrice.ticketPrice(grpMemNum + 1);
+        return ticketPrice;
+    }
     
     //****************
     // modifiers
@@ -147,8 +170,10 @@ contract DegenMaster is DegenEvents {
         isPayEnoughForGroupCreate
         public payable  
     {
-        _groupCounter.increment();
-        uint256 groupId = _groupCounter.current();
+        // TODO: judge if the task exist
+
+        // group id
+        uint256 groupId = _taskId2GroupIds[affiliateTaskID].length + 1;
 
         // player data
         _pID2Name[msg.sender] = ownerName;
@@ -168,11 +193,20 @@ contract DegenMaster is DegenEvents {
         _groupId2Details[groupId] = groupDet;
         _groupId2OwnerAddr[groupId] = msg.sender;
 
-        // create group leader NFT
-        string memory taskName = _taskId2Details[affiliateTaskID].taskName;
-        string memory nftName = string.concat(taskName, "_group_", Strings.toString(groupId));
+        // modify task data
+        _taskId2Details[affiliateTaskID].totalGroupNumber += 1;
+        _taskId2Details[affiliateTaskID].totalPeopleNumber += 1;
+        _taskId2GroupIds[affiliateTaskID].push(groupId);
+
+        // money enter reward pool
+        _taskId2Details[affiliateTaskID].totalRewardPool += msg.value;
+
+        // leader creates group NFT contract
+        string memory nftName = string.concat("taskId_", Strings.toString(affiliateTaskID), "_grpId_", Strings.toString(groupId));
         GroupNFT groupNFT = new GroupNFT(nftName, nftName);
         groupNFT.safeMint(msg.sender);
+
+        _groupId2NFTAddr[groupId] = address(groupNFT);
 
         emit onCreateNewGroup
             (
@@ -185,31 +219,73 @@ contract DegenMaster is DegenEvents {
             );
     }
 
-    // TODO: 
-    // function joinGroup(uint256 groupId, uint256 affiliateTaskID) 
-    //     isHuman
-    //     public payable  
-    // {
-    //     _groupCounter.increment();
-    //     uint256 groupId = _groupCounter.current();
+    function joinGroup(uint256 groupId, uint256 affiliateTaskID, string memory playerName) 
+        isHuman
+        public payable  
+    {
+        // TODO: judge if the group exist
 
-    //     // player data
-    //     _pID2Name[msg.sender] = ownerName;
+        // isPayEnoughForEnterGroup
+        uint256 ticketPrice = getCurrentJoinGroupPrice(groupId);
+        require(msg.value >= ticketPrice, string.concat("joinGroupFee should be large than ", Strings.toString(ticketPrice)));
         
-    //     // group data
-    //     GroupDetails memory groupDet = GroupDetails({
-    //         groupName: groupName,
-    //         affiliateTaskID: affiliateTaskID,
-    //         groupId: groupId,
-    //         ownerAddress: msg.sender,
-    //         ownerName: ownerName,
-    //         createTimeStamp: block.timestamp,
+        // player data
+        _pID2Name[msg.sender] = playerName;
+        
+        // modify group and task data
+        _taskId2Details[affiliateTaskID].totalPeopleNumber += 1;
+        _groupId2MemberAddrs[groupId].push(msg.sender);
+        _groupId2Details[groupId].totalPeopleNumber += 1;      
 
-    //         ownerAmountPaid: msg.value,
-    //         totalPeopleNumber: 0
-    //     });
-    //     _groupId2Details[groupId] = groupDet;
-    //     _groupId2OwnerAddr[groupId] = msg.sender;
-    // }
+        // money enter the reward pool
+        bool flag = false;
+        uint256 rewardPoolMoney = 0;
+        (flag, rewardPoolMoney) = SafeMath.tryMul(msg.value, _b);
+        require(flag, "[joinGroup] Number overflow occurs when calculate (flag, rewardPoolMoney) = SafeMath.tryMul(msg.value, _b).");
+        (flag, rewardPoolMoney) = SafeMath.tryDiv(rewardPoolMoney, _denominator);
+        require(flag, "[joinGroup] Number overflow occurs when calculate (flag, rewardPoolMoney) = SafeMath.tryDiv(rewardPoolMoney, _denominator).");
+
+        _taskId2Details[affiliateTaskID].totalRewardPool += rewardPoolMoney;
+
+        // money distributed to group leader 
+        uint256 grpLdReward = 0;
+        (flag, grpLdReward) = SafeMath.tryMul(msg.value, _a);
+        require(flag, "[joinGroup] Number overflow occurs when calculate (flag, grpLdReward) = SafeMath.tryMul(msg.value, _a).");
+        (flag, grpLdReward) = SafeMath.tryDiv(grpLdReward, _denominator);
+        require(flag, "[joinGroup] Number overflow occurs when calculate (flag, grpLdReward) = SafeMath.tryDiv(grpLdReward, _denominator).");
+
+        _pID2Reward[_groupId2Details[groupId].ownerAddress] += grpLdReward;
+
+        // money distributed to group members
+        uint256 grpMemReward = 0;
+        (flag, grpMemReward) = SafeMath.trySub(msg.value, rewardPoolMoney);
+        require(flag, "[joinGroup] Number overflow occurs when calculate (flag, grpMemReward) = SafeMath.trySub(msg.value, rewardPoolMoney).");
+        (flag, grpMemReward) = SafeMath.trySub(grpMemReward, grpLdReward);
+        require(flag, "[joinGroup] Number overflow occurs when calculate (flag, grpMemReward) = SafeMath.trySub(grpMemReward, grpLdReward).");
+
+        uint256 memNum = _groupId2MemberAddrs[groupId].length;
+        uint256 eachReward = 0;
+        (flag, eachReward) = SafeMath.tryDiv(grpMemReward, memNum);
+        require(flag, "[joinGroup] Number overflow occurs when calculate (flag, eachReward) = SafeMath.tryDiv(grpMemReward, memNum).");
+
+        address[] memory memAddrs = _groupId2MemberAddrs[groupId];
+        for(uint idx=0; idx<memNum; idx++){
+            _pID2Reward[memAddrs[idx]] += eachReward;
+        }
+        
+        // mint a NFT for group member
+        GroupNFT groupNFT = GroupNFT(_groupId2NFTAddr[groupId]);
+        groupNFT.safeMint(msg.sender);
+
+        emit onJoinGroup
+            (
+                affiliateTaskID,
+                groupId,
+                msg.sender,
+                playerName,
+                msg.value,
+                block.timestamp
+            );
+    }
 
 }
