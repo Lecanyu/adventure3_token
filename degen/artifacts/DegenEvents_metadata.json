@@ -273,11 +273,11 @@
 	},
 	"sources": {
 		"degen/DegenEvents.sol": {
-			"keccak256": "0xd64551ea1c00c56ca59e8b56962b7060195ddbcc49a929eac97265d883961a61",
+			"keccak256": "0xc95b4bd6034cd5a1e1ceb310c632401568f7636fe42dad077981b058d3643c12",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://ff556d890e2299fedce70240b804c6513623945bd6b88a3a6c568eb546fba961",
-				"dweb:/ipfs/QmNYmnsESyfmSf2imKUm1gjqLiPNqzUuE6MobBVtFhg7oA"
+				"bzz-raw://2c804271e531766f52d6beceaefd090efce2309d88232cd5358f70a751be882f",
+				"dweb:/ipfs/QmdF4eukQupdArEy2ADZpHVpK5QSjEbuRgfkiLUaRqSbuX"
 			]
 		}
 	},

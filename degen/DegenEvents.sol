@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.6;
 
-contract DegenEvents {
+interface DegenEvents {
     // fired whenever a task is created
     event onCreateNewTask
     (
@@ -22,7 +22,7 @@ contract DegenEvents {
         address ownerAddress,
         string ownerName,
         uint256 amountPaid,
-        uint256 createTimeStamp
+        uint256 timestamp
     );
 
     // fired whenever a member join a group
@@ -33,7 +33,18 @@ contract DegenEvents {
         address playerAddress,
         string playerName,
         uint256 amountPaid,
-        uint256 joinTimeStamp
+        uint256 timestamp
+    );
+
+    // fired whenever a NFT got traded
+    event onNFTTraded
+    (
+        uint256 indexed affiliateTaskID,
+        uint256 indexed groupId,
+        address from,
+        address to,
+        uint256 tokenId,
+        uint256 timestamp
     );
 
     // show current task status

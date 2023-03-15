@@ -74,6 +74,7 @@ contract DegenMaster is DegenEvents {
     mapping (uint256 => GroupDetails) public _groupId2Details;
     mapping (uint256 => address[]) public _groupId2MemberAddrs;    // group id => member addr list
     mapping (uint256 => address) public _groupId2NFTAddr;           // group id => NFT addr
+    address[] public _NFTAddrs;                                     // NFT Addrs
 
     constructor() {}
 
@@ -92,14 +93,25 @@ contract DegenMaster is DegenEvents {
         uint256 ticketPrice = DegenTicketPrice.ticketPrice(grpMemNum + 1);
         return ticketPrice;
     }
+
+
+    // NFT trading func
+    function nftTransferModifyStatus(address from, address to, uint256 tokenId) 
+        isNFTContract
+        public
+    {
+
+    }
+
+
     
     //****************
     // modifiers
     //****************
-    /**
-     * @dev prevents contracts from interacting with fomo3d 
-     */
     modifier isHuman() {
+        /**
+        * @dev prevents contracts from interacting with fomo3d 
+        */
         address addr = msg.sender;
         uint256 codeLength;
         
@@ -118,6 +130,17 @@ contract DegenMaster is DegenEvents {
         _;
     }
 
+    modifier isNFTContract() {
+        bool allow = false;
+        for(uint256 i=0; i<_NFTAddrs.length; i++){
+            if(msg.sender == _NFTAddrs[i]){
+                allow = true;
+                break;
+            }
+        }
+        require(allow, "only internal NFT contract");
+        _;
+    }
 
     //****************
     // task function
@@ -162,6 +185,9 @@ contract DegenMaster is DegenEvents {
             );
     }
 
+    // todo: implement task ends
+
+
     //****************
     // group function
     //****************
@@ -203,10 +229,11 @@ contract DegenMaster is DegenEvents {
 
         // leader creates group NFT contract
         string memory nftName = string.concat("taskId_", Strings.toString(affiliateTaskID), "_grpId_", Strings.toString(groupId));
-        GroupNFT groupNFT = new GroupNFT(nftName, nftName);
-        groupNFT.safeMint(msg.sender);
+        GroupNFT groupNFT = new GroupNFT(nftName, nftName, address(this));
+        uint256 tokenId = groupNFT.safeMint(msg.sender);
 
         _groupId2NFTAddr[groupId] = address(groupNFT);
+        _NFTAddrs.push(address(groupNFT));
 
         emit onCreateNewGroup
             (
@@ -241,32 +268,32 @@ contract DegenMaster is DegenEvents {
         bool flag = false;
         uint256 rewardPoolMoney = 0;
         (flag, rewardPoolMoney) = SafeMath.tryMul(msg.value, _b);
-        require(flag, "[joinGroup] Number overflow occurs when calculate (flag, rewardPoolMoney) = SafeMath.tryMul(msg.value, _b).");
+        require(flag, "[joinGroup] (flag, rewardPoolMoney) = SafeMath.tryMul(msg.value, _b).");
         (flag, rewardPoolMoney) = SafeMath.tryDiv(rewardPoolMoney, _denominator);
-        require(flag, "[joinGroup] Number overflow occurs when calculate (flag, rewardPoolMoney) = SafeMath.tryDiv(rewardPoolMoney, _denominator).");
+        require(flag, "[joinGroup] (flag, rewardPoolMoney) = SafeMath.tryDiv(rewardPoolMoney, _denominator).");
 
         _taskId2Details[affiliateTaskID].totalRewardPool += rewardPoolMoney;
 
         // money distributed to group leader 
         uint256 grpLdReward = 0;
         (flag, grpLdReward) = SafeMath.tryMul(msg.value, _a);
-        require(flag, "[joinGroup] Number overflow occurs when calculate (flag, grpLdReward) = SafeMath.tryMul(msg.value, _a).");
+        require(flag, "[joinGroup] (flag, grpLdReward) = SafeMath.tryMul(msg.value, _a).");
         (flag, grpLdReward) = SafeMath.tryDiv(grpLdReward, _denominator);
-        require(flag, "[joinGroup] Number overflow occurs when calculate (flag, grpLdReward) = SafeMath.tryDiv(grpLdReward, _denominator).");
+        require(flag, "[joinGroup] (flag, grpLdReward) = SafeMath.tryDiv(grpLdReward, _denominator).");
 
         _pID2Reward[_groupId2Details[groupId].ownerAddress] += grpLdReward;
 
         // money distributed to group members
         uint256 grpMemReward = 0;
         (flag, grpMemReward) = SafeMath.trySub(msg.value, rewardPoolMoney);
-        require(flag, "[joinGroup] Number overflow occurs when calculate (flag, grpMemReward) = SafeMath.trySub(msg.value, rewardPoolMoney).");
+        require(flag, "[joinGroup] (flag, grpMemReward) = SafeMath.trySub(msg.value, rewardPoolMoney).");
         (flag, grpMemReward) = SafeMath.trySub(grpMemReward, grpLdReward);
-        require(flag, "[joinGroup] Number overflow occurs when calculate (flag, grpMemReward) = SafeMath.trySub(grpMemReward, grpLdReward).");
+        require(flag, "[joinGroup] (flag, grpMemReward) = SafeMath.trySub(grpMemReward, grpLdReward).");
 
         uint256 memNum = _groupId2MemberAddrs[groupId].length;
         uint256 eachReward = 0;
         (flag, eachReward) = SafeMath.tryDiv(grpMemReward, memNum);
-        require(flag, "[joinGroup] Number overflow occurs when calculate (flag, eachReward) = SafeMath.tryDiv(grpMemReward, memNum).");
+        require(flag, "[joinGroup] (flag, eachReward) = SafeMath.tryDiv(grpMemReward, memNum).");
 
         address[] memory memAddrs = _groupId2MemberAddrs[groupId];
         for(uint idx=0; idx<memNum; idx++){
@@ -275,7 +302,7 @@ contract DegenMaster is DegenEvents {
         
         // mint a NFT for group member
         GroupNFT groupNFT = GroupNFT(_groupId2NFTAddr[groupId]);
-        groupNFT.safeMint(msg.sender);
+        uint256 tokenId = groupNFT.safeMint(msg.sender);
 
         emit onJoinGroup
             (

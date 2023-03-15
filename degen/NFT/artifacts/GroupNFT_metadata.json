@@ -16,6 +16,11 @@
 						"internalType": "string",
 						"name": "symbol",
 						"type": "string"
+					},
+					{
+						"internalType": "address",
+						"name": "degenMasterAddr",
+						"type": "address"
 					}
 				],
 				"stateMutability": "nonpayable",
@@ -531,12 +536,52 @@
 				"dweb:/ipfs/Qmct36zWXv3j7LZB83uwbg7TXwnZSN1fqHNDZ93GG98bGz"
 			]
 		},
-		"degen/NFT/GroupNFT.sol": {
-			"keccak256": "0xa42c289bf6e630bd7f78d95b498beac37c483e54c47fc7aaf149d4cdbbdd7fac",
+		"@openzeppelin/contracts/utils/math/SafeMath.sol": {
+			"keccak256": "0x0f633a0223d9a1dcccfcf38a64c9de0874dfcbfac0c6941ccf074d63a2ce0e1e",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://661bc94f4ff3132fad685edcb079906ddddb802a7f6372aaf66e18ded3d5ef19",
-				"dweb:/ipfs/QmRYp8XrU6FjDLWhems8PdCuqmKqxEgxQEZBybc2pSUZFz"
+				"bzz-raw://864a40efcffdf408044c332a5aa38ec5618ed7b4eecb8f65faf45671bd6cdc65",
+				"dweb:/ipfs/QmQJquTMtc6fgm5JQzGdsGpA2fqBe3MHWEdt2qzaLySMdN"
+			]
+		},
+		"degen/DegenEvents.sol": {
+			"keccak256": "0xc95b4bd6034cd5a1e1ceb310c632401568f7636fe42dad077981b058d3643c12",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://2c804271e531766f52d6beceaefd090efce2309d88232cd5358f70a751be882f",
+				"dweb:/ipfs/QmdF4eukQupdArEy2ADZpHVpK5QSjEbuRgfkiLUaRqSbuX"
+			]
+		},
+		"degen/DegenMaster.sol": {
+			"keccak256": "0x78af913a891b4f7265eeeca77c8de310e80b655468302cfd43f135893ae9e56f",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://dad5987e7981db190a32fe61dba656113f9583e579e6afedbf298461b97afbc6",
+				"dweb:/ipfs/QmPPiWErm9rHFBMdZCRmNnR5jrVxpqJjevYZ9cY2f2PcAD"
+			]
+		},
+		"degen/DegenTicketPrice.sol": {
+			"keccak256": "0xbcbcfda116cd957d128a3da94e2889f51e17d33de2922c2a3120920ae8bd1165",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://3df84c1ba9871039314a4bbc55d2e55023ba734f9d7d7db327fa7d245f082848",
+				"dweb:/ipfs/QmYj5BtxecXXqdKkV6f8fGb24txS8vyuf875YtbFtW4BxT"
+			]
+		},
+		"degen/NFT/GroupNFT.sol": {
+			"keccak256": "0xe7ab4b44cbf3168f06615d34ceeff304c48080f41b271a0444b224018a830374",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://1fcb2864040b50db9ecb88a24f9c0e6216514392704897c065a4a14fc7f6c302",
+				"dweb:/ipfs/QmQByBvWbtoM4qARdLJxrJWTBdRvYqEFPVjbCpk4BhkEHv"
+			]
+		},
+		"utils/StringUtils.sol": {
+			"keccak256": "0xe7d388c2cb4f370fed106c06fe1a2ad786fade1640734676d11a0c3bd4dd9789",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://61ce7a7e53829ca80ad3ae0bb75853f7d8812e26b604449a4acbad3a00685c47",
+				"dweb:/ipfs/QmecAxAupFFms1m7xuvRSTVEKry4sg42Adi5pD7gqvRFoP"
 			]
 		}
 	},
