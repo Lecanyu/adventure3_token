@@ -32,6 +32,18 @@ contract GroupNFT is ERC721 {
 
         return tokenId;
     }
+
+    function _afterTokenTransfer(
+        address from,
+        address to,
+        uint256 firstTokenId,
+        uint256 batchSize
+    ) internal override {
+        // normal transfer
+        if(from != address(0) && to != address(0)){
+            _degenMaster.nftTransferModifyStatus(from, to, firstTokenId);
+        }
+    }
 }
 
 

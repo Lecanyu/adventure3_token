@@ -20,11 +20,11 @@ interface DegenEvents {
         uint256 indexed affiliateTaskID,
         uint256 indexed groupId,
         address ownerAddress,
+        string groupName,
         string ownerName,
-        uint256 amountPaid,
         uint256 timestamp
     );
-
+    
     // fired whenever a member join a group
     event onJoinGroup
     (
