@@ -106,9 +106,24 @@
 						"type": "uint256"
 					},
 					{
-						"internalType": "bool",
-						"name": "isMonopolyPenalty",
-						"type": "bool"
+						"internalType": "int256",
+						"name": "firstGrpId",
+						"type": "int256"
+					},
+					{
+						"internalType": "int256",
+						"name": "SecondGrpId",
+						"type": "int256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "firstGrpPeopleNum",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "secondGrpPeopleNum",
+						"type": "uint256"
 					}
 				],
 				"name": "ticketPrice",
@@ -159,11 +174,11 @@
 			]
 		},
 		"degen/DegenMoneyLib.sol": {
-			"keccak256": "0x5f6cf7533ac792782a9d228784c9a977e439dca8acf488d381c9628737f4e9c4",
+			"keccak256": "0x8f64f199cab16fb11c9acade8cd95798430d735852c8127a88e76b3cd47b364a",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://a6fa59909133e1612a65ad6a78c50e859f1f690795251fb31a27d7ec32546f12",
-				"dweb:/ipfs/QmTCjheTReFRTQtW4c5w4YVVkA8DTV5o6M7sRmrJDT7f1c"
+				"bzz-raw://9e70d177872410ba80d9127d56d5e65c937416d0d13e310daf979a0df90d8a1c",
+				"dweb:/ipfs/QmeufNLbpRNAF45isFzsSsYuJNhKLoLmpXbtQcN8upF5ZU"
 			]
 		}
 	},

@@ -9,6 +9,7 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
+
 contract DegenMaster is DegenEvents {
     using Counters for Counters.Counter;
 
@@ -69,6 +70,12 @@ contract DegenMaster is DegenEvents {
     mapping (uint256 => mapping(uint256 => uint256[])) private _tidxgid2TokenIds;
     mapping (uint256 => mapping(uint256 => uint256)) private _tidxgid2LeaderTokenId;
 
+    //****************
+    // TEMP DATA 
+    //****************
+    mapping (address => bool) private _uniqueAddrs;
+
+
     constructor() {
         _groupNFT = new GroupNFT("DegenTaskNFT", "DTN", address(this));
         _degenManager = msg.sender;
@@ -93,49 +100,116 @@ contract DegenMaster is DegenEvents {
         return _taskId2TokenIds[taskId].length;
     }
 
-    // function getTaskUniquePeopleNum(uint256 taskId) public returns (uint256 num) {
-    //     if(_taskId2TokenIds[taskId].length <= 0){
-    //         return 0;
-    //     }
-    //     // 需要实现统计一个数组里的unique element number
-    //     uint256 upn = 0;
-    //     mapping(address => bool) memory playerAddrs;
-    //     for(uint256 i=0; i<_taskId2TokenIds[taskId]; i++){
-    //         address addr = _tokenId2PlayerAddr[_taskId2TokenIds[taskId][i]];
-    //         if(playerAddrs[addr]){
-    //             continue;
-    //         }
-    //         else{
-    //             playerAddrs[addr] = true;
-    //             upn++;
-    //         } 
-    //     }
-    //     return upn;
-    // }
+    function getTaskUniquePeopleNum(uint256 taskId) public returns (uint256 num) {
+        if(_taskId2TokenIds[taskId].length <= 0){
+            return 0;
+        }
+        
+        uint256 upn = 0;
+        for(uint256 i=0; i<_taskId2TokenIds[taskId].length; i++){
+            address addr = _tokenId2PlayerAddr[_taskId2TokenIds[taskId][i]];
+            if(_uniqueAddrs[addr]){
+                continue;
+            }
+            else{
+                _uniqueAddrs[addr] = true;
+                upn++;
+            } 
+        }
+
+        // del temp mapping
+        for(uint256 i=0; i<_taskId2TokenIds[taskId].length; i++){
+            address addr = _tokenId2PlayerAddr[_taskId2TokenIds[taskId][i]];
+            delete _uniqueAddrs[addr];
+        }
+        return upn;
+    }
 
     function getTaskGroupNum(uint256 taskId) public view returns (uint256 num) {
         return _taskId2Detail[taskId].totalGroupNum;
     }
 
-    // todo implement
-    // return the biggest and second biggest group id
-    function getTaskFirstSecondGroup(uint256 taskId) public view returns (uint256 firstGrpId, uint256 SecondGrpId) {
-        for(uint256 i=0; i<_taskId2TokenIds[taskId].length; i++){
 
+    // return the biggest and second biggest group id
+    function groupCompare(uint256 gid1PeopleNum, uint256 gid1Ts, uint256 gid2PeopleNum, uint256 gid2Ts) private pure returns (bool) {
+        if(gid1PeopleNum > gid2PeopleNum){
+            return false;
         }
+        else if (gid1PeopleNum == gid2PeopleNum) {
+            if(gid1Ts <= gid2Ts){
+                return false;
+            }
+            else{
+                return true;
+            }
+        }
+        else{
+            return true;
+        }
+    }
+    function getTaskFirstSecondGroup(uint256 taskId) private view returns (int256 firstGrpId, int256 secondGrpId, uint256 firstGrpPeopleNum, uint256 secondGrpPeopleNum) {
+        firstGrpId = -1;
+        secondGrpId = -1;
+        firstGrpPeopleNum = 0;
+        secondGrpPeopleNum = 0;
+        uint256 firstGidTs = 9999999999;
+        uint256 secondGidTs = 9999999999;
+        
+        for(uint256 i=0; i<_taskId2TokenIds[taskId].length; i++){
+            uint256 gid = _tokenId2GroupId[_taskId2TokenIds[taskId][i]];
+            uint256 num = getGroupPeopleNum(taskId, gid);
+            uint256 ts = _tidxgid2Detail[taskId][gid].createTimeStamp;
+
+            bool change = groupCompare(firstGrpPeopleNum, firstGidTs, num, ts);
+            if(change){
+                firstGrpId = int256(gid);
+                firstGrpPeopleNum = num;
+                firstGidTs = ts;
+                continue;
+            }
+            else{
+                change = groupCompare(secondGrpPeopleNum, secondGidTs, num, ts);
+                if(change){
+                    secondGrpId = int256(gid);
+                    secondGrpPeopleNum = num;
+                    secondGidTs = ts;
+                }
+            }
+        }
+
+        return (firstGrpId, secondGrpId, firstGrpPeopleNum, secondGrpPeopleNum);
     }
 
     //****************
     // group utils
     //****************
+    function isGroupActive(uint256 taskId, uint256 groupId) public view returns (bool){
+        if(isTaskActive(taskId) == false){
+            return false;
+        }
+
+        if(block.timestamp < _tidxgid2Detail[taskId][groupId].createTimeStamp){
+            return false;
+        }
+        return true;
+    }
+
     function getGroupPeopleNum(uint256 taskId, uint256 groupId) public view returns (uint256 num){
         return _tidxgid2TokenIds[taskId][groupId].length;
     }
 
-    function getCurrentJoinGroupPrice(uint256 taskId, uint256 groupId) public view returns (uint256 price){
+    function getCurrentJoinGroupPrice(uint256 taskId, uint256 groupId) private view returns (uint256 price){
         // get current group member number, rule out group leader
         uint256 grpMemNum = getGroupPeopleNum(taskId, groupId) - 1;
-        uint256 ticketPrice = DegenMoneyLib.ticketPrice(grpMemNum + 1, _taskId2Detail[taskId].totalRewardPool, );
+
+        // get current group status
+        int256 firstGrpId;
+        int256 SecondGrpId;
+        uint256 firstGrpPeopleNum;
+        uint256 secondGrpPeopleNum;
+        (firstGrpId, SecondGrpId, firstGrpPeopleNum, secondGrpPeopleNum) = getTaskFirstSecondGroup(taskId);
+
+        uint256 ticketPrice = DegenMoneyLib.ticketPrice(grpMemNum + 1, _taskId2Detail[taskId].totalRewardPool, firstGrpId, SecondGrpId, firstGrpPeopleNum, secondGrpPeopleNum);
         return ticketPrice;
     }
 
@@ -144,12 +218,21 @@ contract DegenMaster is DegenEvents {
     //****************
     function nftTransferModifyStatus(address from, address to, uint256 tokenId) 
         isNFTContract
-        public
+        external
     {
         _tokenId2PlayerAddr[tokenId] = to;
 
         _tidxgid2Detail[_tokenId2TaskId[tokenId]][_tokenId2GroupId[tokenId]].ownerAddress = to;
         _tidxgid2Detail[_tokenId2TaskId[tokenId]][_tokenId2GroupId[tokenId]].ownerName = _pID2Name[to];
+
+        emit onNFTTraded(
+            _tokenId2TaskId[tokenId],
+            _tokenId2GroupId[tokenId],
+            from,
+            to,
+            tokenId,
+            block.timestamp
+        );
     }
     
     //****************
@@ -264,7 +347,8 @@ contract DegenMaster is DegenEvents {
         isPayEnoughForGroupCreate
         public payable  
     {
-        // TODO: judge if the task exist
+        // judge if the task exist
+        require(isTaskActive(affiliateTaskID), "task must be active");
 
         // group id
         uint256 groupId = getTaskGroupNum(affiliateTaskID);
@@ -311,7 +395,8 @@ contract DegenMaster is DegenEvents {
         isHuman
         public payable  
     {
-        // TODO: judge if the group exist
+        // judge if the group exist
+        require(isGroupActive(affiliateTaskID, groupId), "group must be active");
 
         // isPayEnoughForEnterGroup
         uint256 ticketPrice = getCurrentJoinGroupPrice(affiliateTaskID, groupId);

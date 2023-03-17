@@ -14,6 +14,7 @@ library DegenMoneyLib {
     uint256 constant private _b = 50;       // 门票金额投入奖池的比例（%）
     uint256 constant private _c = 10;       // 队长的最终奖池收益比例（%）
     uint256 constant private _p = 10;       // MonopolyPenalty比例（%）
+    uint256 constant private _v = 10;       // 第一名队伍比第二名队伍人数多_v时，触发MonopolyPenalty
 
     uint256 constant private _alpha = 2;
     uint256 constant private _beta = 10;               // beta = _beta / _denominator
@@ -28,7 +29,16 @@ library DegenMoneyLib {
         return _groupCreateMinFee;
     }
 
-    function ticketPrice(uint256 ith, uint256 totalRewardPool, bool isMonopolyPenalty) public pure returns (uint256 price) {
+    function ticketPrice(
+        uint256 ith, 
+        uint256 totalRewardPool,
+        int256 firstGrpId,
+        int256 SecondGrpId,
+        uint256 firstGrpPeopleNum,
+        uint256 secondGrpPeopleNum
+    ) 
+    public pure returns (uint256 price) 
+    {
         require(_alpha <= 5, "To avoid overflow, alpha <= 5 only");
 
         bool flag = true;
@@ -50,6 +60,27 @@ library DegenMoneyLib {
 
         (flag, tp) = SafeMath.tryAdd(tp, _gamma);
         require(flag, "Number overflow occurs when calculate ticket price in _beta/_denominator*i**_alpha + gamma.");
+
+        bool isMonopolyPenalty;
+        if(firstGrpId >= 0 && SecondGrpId >= 0){
+            if(firstGrpPeopleNum - secondGrpPeopleNum > _v){
+                isMonopolyPenalty = true;
+            }
+            else {
+                isMonopolyPenalty = false;
+            }
+        }
+        else if (firstGrpId >= 0 && SecondGrpId < 0){
+            if(firstGrpPeopleNum > _v) {
+                isMonopolyPenalty = true;
+            }
+            else {
+                isMonopolyPenalty = false;
+            }
+        }
+        else{
+            isMonopolyPenalty = false;
+        }
 
         if (isMonopolyPenalty){
             uint256 extraFee = 0;
