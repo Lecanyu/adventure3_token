@@ -104,6 +104,19 @@
 			{
 				"inputs": [
 					{
+						"internalType": "uint256",
+						"name": "tokenId",
+						"type": "uint256"
+					}
+				],
+				"name": "allowNFTBurnable",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "address",
 						"name": "to",
 						"type": "address"
@@ -136,6 +149,19 @@
 					}
 				],
 				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "tokenId",
+						"type": "uint256"
+					}
+				],
+				"name": "burn",
+				"outputs": [],
+				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -222,7 +248,13 @@
 					}
 				],
 				"name": "safeMint",
-				"outputs": [],
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "tid",
+						"type": "uint256"
+					}
+				],
 				"stateMutability": "nonpayable",
 				"type": "function"
 			},
@@ -390,6 +422,9 @@
 				"balanceOf(address)": {
 					"details": "See {IERC721-balanceOf}."
 				},
+				"burn(uint256)": {
+					"details": "Burns `tokenId`. See {ERC721-_burn}. Requirements: - The caller must own `tokenId` or be an approved operator."
+				},
 				"getApproved(uint256)": {
 					"details": "See {IERC721-getApproved}."
 				},
@@ -442,7 +477,7 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": false,
+			"enabled": true,
 			"runs": 200
 		},
 		"remappings": []
@@ -470,6 +505,14 @@
 			"urls": [
 				"bzz-raw://6e75cf83beb757b8855791088546b8337e9d4684e169400c20d44a515353b708",
 				"dweb:/ipfs/QmYvPafLfoquiDMEj7CKHtvbgHu7TJNPSVPSCjrtjV8HjV"
+			]
+		},
+		"@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol": {
+			"keccak256": "0x52da94e59d870f54ca0eb4f485c3d9602011f668ba34d72c88124a1496ebaab1",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://09656a37963a61e79df0b718ad0ec323cd29d409d6ead33dbb91d0770ff87fa4",
+				"dweb:/ipfs/QmXLWCYoMpZ4SecK4kVaL53LZWXZNbQG8gUzACmZ6A64rE"
 			]
 		},
 		"@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol": {
@@ -545,35 +588,35 @@
 			]
 		},
 		"degen/DegenEvents.sol": {
-			"keccak256": "0xc95b4bd6034cd5a1e1ceb310c632401568f7636fe42dad077981b058d3643c12",
+			"keccak256": "0x70e6dcc241107578973ac0d504582090834adaea138b33636b8899ac00555af6",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://2c804271e531766f52d6beceaefd090efce2309d88232cd5358f70a751be882f",
-				"dweb:/ipfs/QmdF4eukQupdArEy2ADZpHVpK5QSjEbuRgfkiLUaRqSbuX"
+				"bzz-raw://6195c722bf5e8a88c6a376478561e68c58002e695b761d963e9cbdd63315a2cd",
+				"dweb:/ipfs/Qmey2Wf1qMGtUdo9rJ7abLVEfn9PiEFPWaZW3kjJF2gstS"
 			]
 		},
 		"degen/DegenMaster.sol": {
-			"keccak256": "0x78af913a891b4f7265eeeca77c8de310e80b655468302cfd43f135893ae9e56f",
+			"keccak256": "0x950e812324ac388c8b952138d3d46e07bbc2c8177e4961d4df4cc986bd87d4b6",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://dad5987e7981db190a32fe61dba656113f9583e579e6afedbf298461b97afbc6",
-				"dweb:/ipfs/QmPPiWErm9rHFBMdZCRmNnR5jrVxpqJjevYZ9cY2f2PcAD"
+				"bzz-raw://672045160be00b241eac1483338a0e3f427e5eb62c57439767afc09cd8d4a476",
+				"dweb:/ipfs/QmToXwESooxt1KJVMNXJYz2vHrVcUdUtDp3YXcBFy1heG8"
 			]
 		},
-		"degen/DegenTicketPrice.sol": {
-			"keccak256": "0xbcbcfda116cd957d128a3da94e2889f51e17d33de2922c2a3120920ae8bd1165",
+		"degen/DegenMoneyLib.sol": {
+			"keccak256": "0x8f64f199cab16fb11c9acade8cd95798430d735852c8127a88e76b3cd47b364a",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://3df84c1ba9871039314a4bbc55d2e55023ba734f9d7d7db327fa7d245f082848",
-				"dweb:/ipfs/QmYj5BtxecXXqdKkV6f8fGb24txS8vyuf875YtbFtW4BxT"
+				"bzz-raw://9e70d177872410ba80d9127d56d5e65c937416d0d13e310daf979a0df90d8a1c",
+				"dweb:/ipfs/QmeufNLbpRNAF45isFzsSsYuJNhKLoLmpXbtQcN8upF5ZU"
 			]
 		},
 		"degen/NFT/GroupNFT.sol": {
-			"keccak256": "0xe7ab4b44cbf3168f06615d34ceeff304c48080f41b271a0444b224018a830374",
+			"keccak256": "0xa280196246b0ead0442daa5cd64c8839827797cce5fe74944ea5739c4cb0dd02",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://1fcb2864040b50db9ecb88a24f9c0e6216514392704897c065a4a14fc7f6c302",
-				"dweb:/ipfs/QmQByBvWbtoM4qARdLJxrJWTBdRvYqEFPVjbCpk4BhkEHv"
+				"bzz-raw://6b337eddb246046e8a6a8217720e8280af83588d7462d98ecffd8f11983cf04f",
+				"dweb:/ipfs/QmQLdLbvFypo2KpiJcjzQpsmfJZrmNM78KqcZ5jMxgyaAi"
 			]
 		},
 		"utils/StringUtils.sol": {

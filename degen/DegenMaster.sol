@@ -5,6 +5,7 @@ import "./DegenEvents.sol";
 import "./NFT/GroupNFT.sol";
 import "./DegenMoneyLib.sol";
 import "../utils/StringUtils.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
@@ -14,6 +15,12 @@ contract DegenMaster is DegenEvents {
     using Counters for Counters.Counter;
 
     address private _degenManager;
+
+    //****************
+    // only use specific token 
+    //**************** 
+    // address constant private _rewardTokenAddr = 0xD4Fc541236927E2EAf8F27606bD7309C1Fc2cbee;
+    // IERC20 private _rewardToken;
 
     //****************
     // NFT
@@ -29,7 +36,6 @@ contract DegenMaster is DegenEvents {
     // PLAYER DATA 
     //****************
     mapping (address => string) private _pID2Name;
-    mapping (address => uint256) private _pID2Reward;    // 玩家账户总奖励，累积值，当任务结算时更新该状态
 
 
     //****************
@@ -78,7 +84,15 @@ contract DegenMaster is DegenEvents {
 
     constructor() {
         _groupNFT = new GroupNFT("DegenTaskNFT", "DTN", address(this));
+        // _rewardToken = ERC20(_rewardTokenAddr);
         _degenManager = msg.sender;
+    }
+
+    //****************
+    // NFT utils
+    //****************
+    function getTokenId2Reward(uint256 tokenId) public view returns(uint256 reward) {
+        return _tokenId2Reward[tokenId];
     }
 
     //****************
@@ -147,7 +161,7 @@ contract DegenMaster is DegenEvents {
             return true;
         }
     }
-    function getTaskFirstSecondGroup(uint256 taskId) private view returns (int256 firstGrpId, int256 secondGrpId, uint256 firstGrpPeopleNum, uint256 secondGrpPeopleNum) {
+    function getTaskFirstSecondGroup(uint256 taskId) public view returns (int256 firstGrpId, int256 secondGrpId, uint256 firstGrpPeopleNum, uint256 secondGrpPeopleNum) {
         firstGrpId = -1;
         secondGrpId = -1;
         firstGrpPeopleNum = 0;
@@ -159,6 +173,10 @@ contract DegenMaster is DegenEvents {
             uint256 gid = _tokenId2GroupId[_taskId2TokenIds[taskId][i]];
             uint256 num = getGroupPeopleNum(taskId, gid);
             uint256 ts = _tidxgid2Detail[taskId][gid].createTimeStamp;
+
+            if(int256(gid) == firstGrpId || int256(gid) == secondGrpId){
+                continue;
+            }
 
             bool change = groupCompare(firstGrpPeopleNum, firstGidTs, num, ts);
             if(change){
@@ -188,7 +206,7 @@ contract DegenMaster is DegenEvents {
             return false;
         }
 
-        if(block.timestamp < _tidxgid2Detail[taskId][groupId].createTimeStamp){
+        if(_tidxgid2Detail[taskId][groupId].createTimeStamp == 0){
             return false;
         }
         return true;
@@ -214,7 +232,7 @@ contract DegenMaster is DegenEvents {
     }
 
     //****************
-    // NFT utils
+    // NFT contract call degen utils
     //****************
     function nftTransferModifyStatus(address from, address to, uint256 tokenId) 
         isNFTContract
@@ -234,12 +252,23 @@ contract DegenMaster is DegenEvents {
             block.timestamp
         );
     }
+
+    function payReward(uint256 tokenId, address payable player)
+        isNFTContract
+        external
+    {
+        player.transfer(_tokenId2Reward[tokenId]);
+        _tokenId2Reward[tokenId] = 0;
+    }
+
     
     //****************
     // player utils
     //****************
-
-
+    // function playerAddr2TokenId(address playerAddr) public view returns (uint256){
+    //     return _pID2TokenId[playerAddr];
+    // }
+    
     
     //****************
     // modifiers
@@ -299,9 +328,10 @@ contract DegenMaster is DegenEvents {
         isHuman
         isPayEnoughForTaskCreate
         public payable  
+        returns (uint256)
     {
-        _taskCounter.increment();
         uint256 taskId = _taskCounter.current();
+        _taskCounter.increment();
         
         // task data
         TaskDetail memory taskDet = TaskDetail({
@@ -328,6 +358,8 @@ contract DegenMaster is DegenEvents {
                 taskDet.taskStartStamp,
                 taskDet.taskEndStamp
             );
+        
+        return taskId;
     }
 
     function endTask(uint256 taskId)
@@ -335,6 +367,10 @@ contract DegenMaster is DegenEvents {
         public
     {
         // normal end
+        // set burnable
+        for(uint256 i=0; i<_taskId2TokenIds[taskId].length; i++){
+            _groupNFT.setBurnable(_taskId2TokenIds[taskId][i]);
+        }
 
         // insufficent people refund
     }
@@ -346,15 +382,13 @@ contract DegenMaster is DegenEvents {
         isHuman
         isPayEnoughForGroupCreate
         public payable  
+        returns (uint256)
     {
         // judge if the task exist
         require(isTaskActive(affiliateTaskID), "task must be active");
 
         // group id
         uint256 groupId = getTaskGroupNum(affiliateTaskID);
-
-        // money enter reward pool
-        _taskId2Detail[affiliateTaskID].totalRewardPool += msg.value;
 
         // mint leader NFT
         uint256 tokenId = _groupNFT.safeMint(msg.sender);
@@ -378,7 +412,8 @@ contract DegenMaster is DegenEvents {
 
         // task data
         _taskId2Detail[affiliateTaskID].totalGroupNum += 1;
-
+        _taskId2Detail[affiliateTaskID].totalRewardPool += msg.value;
+        _taskId2TokenIds[affiliateTaskID].push(tokenId);
 
         emit onCreateNewGroup
             (
@@ -389,11 +424,14 @@ contract DegenMaster is DegenEvents {
                 groupDet.ownerName,
                 groupDet.createTimeStamp
             );
+        
+        return groupId;
     }
 
     function joinGroup(uint256 groupId, uint256 affiliateTaskID) 
         isHuman
         public payable  
+        returns (uint256)
     {
         // judge if the group exist
         require(isGroupActive(affiliateTaskID, groupId), "group must be active");
@@ -409,6 +447,12 @@ contract DegenMaster is DegenEvents {
         _tokenId2Reward[tokenId] = 0;
         _tokenId2PlayerAddr[tokenId] = msg.sender;
 
+        // task data
+        _taskId2TokenIds[affiliateTaskID].push(tokenId);
+
+        // group data
+        _tidxgid2TokenIds[affiliateTaskID][groupId].push(tokenId);
+
         // money enter the reward pool
         _taskId2Detail[affiliateTaskID].totalRewardPool += DegenMoneyLib.ticketIncome2RewardPool(msg.value);
 
@@ -417,7 +461,7 @@ contract DegenMaster is DegenEvents {
         _tokenId2Reward[gldTokenId] = DegenMoneyLib.ticketIncome2GroupLeader(msg.value);
 
         // money distributed to group members
-        uint256 memNum = _tidxgid2TokenIds[affiliateTaskID][groupId].length - 1;    // ruleout leader
+        uint256 memNum = getGroupPeopleNum(affiliateTaskID, groupId) - 1;    // ruleout leader
         for(uint i=0; i<memNum; i++){
             uint256 tid = _tidxgid2TokenIds[affiliateTaskID][groupId][i];
             if(tid != gldTokenId){
@@ -434,6 +478,8 @@ contract DegenMaster is DegenEvents {
                 msg.value,
                 block.timestamp
             );
+        
+        return groupId;
     }
 
 }
