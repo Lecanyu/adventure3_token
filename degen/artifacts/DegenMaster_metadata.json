@@ -27,110 +27,6 @@
 					},
 					{
 						"indexed": false,
-						"internalType": "string",
-						"name": "ownerAddress",
-						"type": "string"
-					},
-					{
-						"indexed": false,
-						"internalType": "bytes32",
-						"name": "ownerName",
-						"type": "bytes32"
-					},
-					{
-						"indexed": false,
-						"internalType": "uint256",
-						"name": "ownerAmountPaid",
-						"type": "uint256"
-					},
-					{
-						"indexed": false,
-						"internalType": "uint256",
-						"name": "totalPeopleNumber",
-						"type": "uint256"
-					}
-				],
-				"name": "currentGroupStatus",
-				"type": "event"
-			},
-			{
-				"anonymous": false,
-				"inputs": [
-					{
-						"indexed": true,
-						"internalType": "uint256",
-						"name": "taskId",
-						"type": "uint256"
-					},
-					{
-						"indexed": true,
-						"internalType": "address",
-						"name": "ownerAddress",
-						"type": "address"
-					},
-					{
-						"indexed": true,
-						"internalType": "string",
-						"name": "ownerName",
-						"type": "string"
-					},
-					{
-						"indexed": false,
-						"internalType": "uint256",
-						"name": "ownerAmountPaid",
-						"type": "uint256"
-					},
-					{
-						"indexed": false,
-						"internalType": "uint256",
-						"name": "taskStartStamp",
-						"type": "uint256"
-					},
-					{
-						"indexed": false,
-						"internalType": "uint256",
-						"name": "taskEndStamp",
-						"type": "uint256"
-					},
-					{
-						"indexed": false,
-						"internalType": "uint256",
-						"name": "totalRewardPool",
-						"type": "uint256"
-					},
-					{
-						"indexed": false,
-						"internalType": "uint256",
-						"name": "totalGroupNumber",
-						"type": "uint256"
-					},
-					{
-						"indexed": false,
-						"internalType": "uint256",
-						"name": "totalPeopleNumber",
-						"type": "uint256"
-					}
-				],
-				"name": "currentTaskStatus",
-				"type": "event"
-			},
-			{
-				"anonymous": false,
-				"inputs": [
-					{
-						"indexed": true,
-						"internalType": "uint256",
-						"name": "affiliateTaskID",
-						"type": "uint256"
-					},
-					{
-						"indexed": true,
-						"internalType": "uint256",
-						"name": "groupId",
-						"type": "uint256"
-					},
-					{
-						"indexed": false,
 						"internalType": "address",
 						"name": "ownerAddress",
 						"type": "address"
@@ -138,19 +34,19 @@
 					{
 						"indexed": false,
 						"internalType": "string",
+						"name": "groupName",
+						"type": "string"
+					},
+					{
+						"indexed": false,
+						"internalType": "string",
 						"name": "ownerName",
 						"type": "string"
 					},
 					{
 						"indexed": false,
 						"internalType": "uint256",
-						"name": "amountPaid",
-						"type": "uint256"
-					},
-					{
-						"indexed": false,
-						"internalType": "uint256",
-						"name": "createTimeStamp",
+						"name": "timestamp",
 						"type": "uint256"
 					}
 				],
@@ -242,7 +138,7 @@
 					{
 						"indexed": false,
 						"internalType": "uint256",
-						"name": "joinTimeStamp",
+						"name": "timestamp",
 						"type": "uint256"
 					}
 				],
@@ -250,281 +146,53 @@
 				"type": "event"
 			},
 			{
+				"anonymous": false,
 				"inputs": [
 					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"name": "_groupId2Details",
-				"outputs": [
-					{
-						"internalType": "string",
-						"name": "groupName",
-						"type": "string"
-					},
-					{
+						"indexed": true,
 						"internalType": "uint256",
 						"name": "affiliateTaskID",
 						"type": "uint256"
 					},
 					{
+						"indexed": true,
 						"internalType": "uint256",
 						"name": "groupId",
 						"type": "uint256"
 					},
 					{
+						"indexed": false,
 						"internalType": "address",
-						"name": "ownerAddress",
+						"name": "from",
 						"type": "address"
 					},
 					{
-						"internalType": "string",
-						"name": "ownerName",
-						"type": "string"
-					},
-					{
-						"internalType": "uint256",
-						"name": "createTimeStamp",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "ownerAmountPaid",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "totalPeopleNumber",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"name": "_groupId2MemberAddrs",
-				"outputs": [
-					{
+						"indexed": false,
 						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"name": "_groupId2NFTAddr",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"name": "_groupId2OwnerAddr",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"name": "_pID2Name",
-				"outputs": [
-					{
-						"internalType": "string",
-						"name": "",
-						"type": "string"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"name": "_pID2Reward",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"name": "_taskId2Details",
-				"outputs": [
-					{
-						"internalType": "string",
-						"name": "taskName",
-						"type": "string"
-					},
-					{
-						"internalType": "uint256",
-						"name": "taskId",
-						"type": "uint256"
-					},
-					{
-						"internalType": "address",
-						"name": "ownerAddress",
+						"name": "to",
 						"type": "address"
 					},
 					{
-						"internalType": "string",
-						"name": "ownerName",
-						"type": "string"
-					},
-					{
+						"indexed": false,
 						"internalType": "uint256",
-						"name": "amountPaid",
+						"name": "tokenId",
 						"type": "uint256"
 					},
 					{
+						"indexed": false,
 						"internalType": "uint256",
-						"name": "createTimeStamp",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "taskStartStamp",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "taskEndStamp",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "totalRewardPool",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "totalGroupNumber",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "totalPeopleNumber",
+						"name": "timestamp",
 						"type": "uint256"
 					}
 				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"name": "_taskId2GroupIds",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"name": "_taskId2OwnerAddr",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
+				"name": "onNFTTraded",
+				"type": "event"
 			},
 			{
 				"inputs": [
 					{
 						"internalType": "string",
 						"name": "groupName",
-						"type": "string"
-					},
-					{
-						"internalType": "string",
-						"name": "ownerName",
 						"type": "string"
 					},
 					{
@@ -534,7 +202,13 @@
 					}
 				],
 				"name": "createGroup",
-				"outputs": [],
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
 				"stateMutability": "payable",
 				"type": "function"
 			},
@@ -543,11 +217,6 @@
 					{
 						"internalType": "string",
 						"name": "taskName",
-						"type": "string"
-					},
-					{
-						"internalType": "string",
-						"name": "ownerName",
 						"type": "string"
 					},
 					{
@@ -562,7 +231,13 @@
 					}
 				],
 				"name": "createTask",
-				"outputs": [],
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
 				"stateMutability": "payable",
 				"type": "function"
 			},
@@ -570,16 +245,206 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
+						"name": "taskId",
+						"type": "uint256"
+					}
+				],
+				"name": "endTask",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "taskId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
 						"name": "groupId",
 						"type": "uint256"
 					}
 				],
-				"name": "getCurrentJoinGroupPrice",
+				"name": "getGroupPeopleNum",
 				"outputs": [
 					{
 						"internalType": "uint256",
-						"name": "price",
+						"name": "num",
 						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "taskId",
+						"type": "uint256"
+					}
+				],
+				"name": "getTaskFirstSecondGroup",
+				"outputs": [
+					{
+						"internalType": "int256",
+						"name": "firstGrpId",
+						"type": "int256"
+					},
+					{
+						"internalType": "int256",
+						"name": "secondGrpId",
+						"type": "int256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "firstGrpPeopleNum",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "secondGrpPeopleNum",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "taskId",
+						"type": "uint256"
+					}
+				],
+				"name": "getTaskGroupNum",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "num",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "taskId",
+						"type": "uint256"
+					}
+				],
+				"name": "getTaskPeopleNum",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "num",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "taskId",
+						"type": "uint256"
+					}
+				],
+				"name": "getTaskRewardPool",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "totalReward",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "taskId",
+						"type": "uint256"
+					}
+				],
+				"name": "getTaskUniquePeopleNum",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "num",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "tokenId",
+						"type": "uint256"
+					}
+				],
+				"name": "getTokenId2Reward",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "reward",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "taskId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "groupId",
+						"type": "uint256"
+					}
+				],
+				"name": "isGroupActive",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "taskId",
+						"type": "uint256"
+					}
+				],
+				"name": "isTaskActive",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "isAct",
+						"type": "bool"
 					}
 				],
 				"stateMutability": "view",
@@ -596,16 +461,71 @@
 						"internalType": "uint256",
 						"name": "affiliateTaskID",
 						"type": "uint256"
-					},
-					{
-						"internalType": "string",
-						"name": "playerName",
-						"type": "string"
 					}
 				],
 				"name": "joinGroup",
-				"outputs": [],
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
 				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "from",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "to",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "tokenId",
+						"type": "uint256"
+					}
+				],
+				"name": "nftTransferModifyStatus",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "tokenId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address payable",
+						"name": "player",
+						"type": "address"
+					}
+				],
+				"name": "payReward",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "name",
+						"type": "string"
+					}
+				],
+				"name": "registerPlayerName",
+				"outputs": [],
+				"stateMutability": "nonpayable",
 				"type": "function"
 			}
 		],
@@ -630,12 +550,20 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": false,
+			"enabled": true,
 			"runs": 200
 		},
 		"remappings": []
 	},
 	"sources": {
+		"@openzeppelin/contracts/token/ERC20/IERC20.sol": {
+			"keccak256": "0x9750c6b834f7b43000631af5cc30001c5f547b3ceb3635488f140f60e897ea6b",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://5a7d5b1ef5d8d5889ad2ed89d8619c09383b80b72ab226e0fe7bde1636481e34",
+				"dweb:/ipfs/QmebXWgtEfumQGBdVeM6c71McLixYXQP5Bk6kKXuoY4Bmr"
+			]
+		},
 		"@openzeppelin/contracts/token/ERC721/ERC721.sol": {
 			"keccak256": "0x1e854874c68bec05be100dc0092cb5fbbc71253d370ae98ddef248bbfc3fe118",
 			"license": "MIT",
@@ -658,6 +586,14 @@
 			"urls": [
 				"bzz-raw://6e75cf83beb757b8855791088546b8337e9d4684e169400c20d44a515353b708",
 				"dweb:/ipfs/QmYvPafLfoquiDMEj7CKHtvbgHu7TJNPSVPSCjrtjV8HjV"
+			]
+		},
+		"@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol": {
+			"keccak256": "0x52da94e59d870f54ca0eb4f485c3d9602011f668ba34d72c88124a1496ebaab1",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://09656a37963a61e79df0b718ad0ec323cd29d409d6ead33dbb91d0770ff87fa4",
+				"dweb:/ipfs/QmXLWCYoMpZ4SecK4kVaL53LZWXZNbQG8gUzACmZ6A64rE"
 			]
 		},
 		"@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol": {
@@ -733,35 +669,35 @@
 			]
 		},
 		"degen/DegenEvents.sol": {
-			"keccak256": "0xd64551ea1c00c56ca59e8b56962b7060195ddbcc49a929eac97265d883961a61",
+			"keccak256": "0x70e6dcc241107578973ac0d504582090834adaea138b33636b8899ac00555af6",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://ff556d890e2299fedce70240b804c6513623945bd6b88a3a6c568eb546fba961",
-				"dweb:/ipfs/QmNYmnsESyfmSf2imKUm1gjqLiPNqzUuE6MobBVtFhg7oA"
+				"bzz-raw://6195c722bf5e8a88c6a376478561e68c58002e695b761d963e9cbdd63315a2cd",
+				"dweb:/ipfs/Qmey2Wf1qMGtUdo9rJ7abLVEfn9PiEFPWaZW3kjJF2gstS"
 			]
 		},
 		"degen/DegenMaster.sol": {
-			"keccak256": "0x66282026e96b0d476a5d4046db9c87b60d90e4fc3a8403ebfef00c7d1580ad0b",
+			"keccak256": "0xfb1a1286c686fe71cc9bace048d4622a0b5613009286f8a35ee1b1fd8f4d4e53",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://f22d1e9b8694ab780c017ce8c1276ec2b16eb668732c4f976b6e8d7d53190075",
-				"dweb:/ipfs/QmV4du8ThB6TNsyw3UZdWkSqiiu514js8H9yzrwuf4mbcs"
+				"bzz-raw://33503cba9063d19292adb50fd35c9b218d33fa84786681d7714ce829f07701fa",
+				"dweb:/ipfs/QmSuRXVA9BiAb82sJSsSumzGUX3YQ3manrNVCDyj8M824G"
 			]
 		},
-		"degen/DegenTicketPrice.sol": {
-			"keccak256": "0xbcbcfda116cd957d128a3da94e2889f51e17d33de2922c2a3120920ae8bd1165",
+		"degen/DegenMoneyLib.sol": {
+			"keccak256": "0x952acdd309f8e4fec99e744853335ea19ba63b6c4676843969111c75dc50e0e7",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://3df84c1ba9871039314a4bbc55d2e55023ba734f9d7d7db327fa7d245f082848",
-				"dweb:/ipfs/QmYj5BtxecXXqdKkV6f8fGb24txS8vyuf875YtbFtW4BxT"
+				"bzz-raw://460b47eaf7b1bcc6f13e982962dc501d8886db4b8f282b5efbcd87a141d46e69",
+				"dweb:/ipfs/QmcASYxmdZmNcJMvb6B3EnkX85sstb4HJzYqATcwd4FbZM"
 			]
 		},
 		"degen/NFT/GroupNFT.sol": {
-			"keccak256": "0xa42c289bf6e630bd7f78d95b498beac37c483e54c47fc7aaf149d4cdbbdd7fac",
+			"keccak256": "0xf4b113639de9cf1e3e69cbb86d228315e6965d81c30bd489fde4a200c26269ab",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://661bc94f4ff3132fad685edcb079906ddddb802a7f6372aaf66e18ded3d5ef19",
-				"dweb:/ipfs/QmRYp8XrU6FjDLWhems8PdCuqmKqxEgxQEZBybc2pSUZFz"
+				"bzz-raw://2327d2bf1b0f09c301ac320cee6b42acb379a7710ac9eadd19952274b759ea79",
+				"dweb:/ipfs/QmcX9dhMojZqftzfh9VCcrA2A3KrUtNhKr1uMy5HsVyZfx"
 			]
 		},
 		"utils/StringUtils.sol": {

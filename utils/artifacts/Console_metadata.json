@@ -6,23 +6,118 @@
 	"output": {
 		"abi": [
 			{
+				"anonymous": false,
 				"inputs": [
 					{
+						"indexed": false,
 						"internalType": "string",
-						"name": "source",
+						"name": "",
 						"type": "string"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "",
+						"type": "address"
 					}
 				],
-				"name": "stringToBytes32",
-				"outputs": [
+				"name": "LogAddress",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
 					{
+						"indexed": false,
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					},
+					{
+						"indexed": false,
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"name": "LogBool",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					},
+					{
+						"indexed": false,
+						"internalType": "bytes",
+						"name": "",
+						"type": "bytes"
+					}
+				],
+				"name": "LogBytes",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					},
+					{
+						"indexed": false,
 						"internalType": "bytes32",
-						"name": "result",
+						"name": "",
 						"type": "bytes32"
 					}
 				],
-				"stateMutability": "pure",
-				"type": "function"
+				"name": "LogBytes32",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					},
+					{
+						"indexed": false,
+						"internalType": "int256",
+						"name": "",
+						"type": "int256"
+					}
+				],
+				"name": "LogInt",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "LogUint256",
+				"type": "event"
 			}
 		],
 		"devdoc": {
@@ -38,7 +133,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"utils/1.sol": "Console"
+			"utils/Console.sol": "Console"
 		},
 		"evmVersion": "paris",
 		"libraries": {},
@@ -46,18 +141,18 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": false,
+			"enabled": true,
 			"runs": 200
 		},
 		"remappings": []
 	},
 	"sources": {
-		"utils/1.sol": {
-			"keccak256": "0x5e97d0272feb02b765fb958a8db661950e1b34a737913c41445a439b9dd6489b",
+		"utils/Console.sol": {
+			"keccak256": "0x2ee1d6b71224212d2871ab560dd2a86edbe6ae0532c62dbe0744221a881763ce",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://b79fd406915e837a64b1d632c7718bbde64a77b410e260ea83afc6220a511b74",
-				"dweb:/ipfs/QmUk6tQSdkefxCm7Tjx8pQjCQ4DRYhdnMAbD4z7qPzDzYw"
+				"bzz-raw://5609c0975acacdd5e16690517d35b33f1cd84eaf433f8ce180d6e716e417911d",
+				"dweb:/ipfs/QmZZWRXuXp8iB33kEsdxj5QzZfqQzKpiXdCiP9JLVeEHEE"
 			]
 		}
 	},

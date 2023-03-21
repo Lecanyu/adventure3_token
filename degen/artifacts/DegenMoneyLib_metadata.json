@@ -6,6 +6,25 @@
 	"output": {
 		"abi": [
 			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "LogUint256",
+				"type": "event"
+			},
+			{
 				"inputs": [],
 				"name": "groupCreateMinFee",
 				"outputs": [
@@ -174,11 +193,11 @@
 			]
 		},
 		"degen/DegenMoneyLib.sol": {
-			"keccak256": "0x952acdd309f8e4fec99e744853335ea19ba63b6c4676843969111c75dc50e0e7",
+			"keccak256": "0x21679e03f3b34ad20022ba5dab4b61956a5171a907e61c3975b2f5cf7f112dbe",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://460b47eaf7b1bcc6f13e982962dc501d8886db4b8f282b5efbcd87a141d46e69",
-				"dweb:/ipfs/QmcASYxmdZmNcJMvb6B3EnkX85sstb4HJzYqATcwd4FbZM"
+				"bzz-raw://0f12368a0465951b9fc0ddad7878d8877e421268ab1200cf656ec0d28e03d692",
+				"dweb:/ipfs/Qma21CdbkyJ9ifmtSDZnTd8DrdnVnHmAJoi8LvvQ6ta79x"
 			]
 		}
 	},

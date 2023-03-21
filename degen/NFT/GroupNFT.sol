@@ -33,7 +33,7 @@ contract GroupNFT is ERC721, ERC721Burnable {
         _tokenId2Burnable[tokenId] = true;
     }
 
-    function getBurnable(uint256 tokenId) public returns (bool) {
+    function getBurnable(uint256 tokenId) public view returns (bool) {
         return _tokenId2Burnable[tokenId];
     }
 

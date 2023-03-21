@@ -1,9 +1,19 @@
+/*
+to test current all interfaces
+
+todo: 
+1. implement dummy USDT
+2. NFT with image
+3. refund logic
+*/
+
+
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.12;
 
 import "./DegenEvents.sol";
-import "./NFT/GroupNFT.sol";
 import "./DegenMoneyLib.sol";
+import "./NFT/GroupNFT.sol";
 import "../utils/StringUtils.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
@@ -86,6 +96,8 @@ contract DegenMaster is DegenEvents {
         _groupNFT = new GroupNFT("DegenTaskNFT", "DTN", address(this));
         // _rewardToken = ERC20(_rewardTokenAddr);
         _degenManager = msg.sender;
+
+        emit onConstruction(address(_groupNFT));
     }
 
     //****************
@@ -180,6 +192,10 @@ contract DegenMaster is DegenEvents {
 
             bool change = groupCompare(firstGrpPeopleNum, firstGidTs, num, ts);
             if(change){
+                secondGrpId = firstGrpId;
+                secondGrpPeopleNum = firstGrpPeopleNum;
+                secondGidTs = firstGidTs;
+
                 firstGrpId = int256(gid);
                 firstGrpPeopleNum = num;
                 firstGidTs = ts;
@@ -216,7 +232,9 @@ contract DegenMaster is DegenEvents {
         return _tidxgid2TokenIds[taskId][groupId].length;
     }
 
-    function getCurrentJoinGroupPrice(uint256 taskId, uint256 groupId) private view returns (uint256 price){
+    function getCurrentJoinGroupPrice(uint256 taskId, uint256 groupId) public view returns (uint256 price){
+        require(isGroupActive(taskId, groupId), "group must be active");
+
         // get current group member number, rule out group leader
         uint256 grpMemNum = getGroupPeopleNum(taskId, groupId) - 1;
 
@@ -367,12 +385,32 @@ contract DegenMaster is DegenEvents {
         public
     {
         // normal end
-        // set burnable
+        // 1. reward pool to winner group
+        int256 firstGrpId;
+        (firstGrpId, , , ) = getTaskFirstSecondGroup(taskId);
+
+        uint256 winnerGrpId = uint256(firstGrpId);
+        uint256 totalReward = getTaskRewardPool(taskId);
+
+        // reward pool distributed to group leader 
+        uint256 gldTokenId = _tidxgid2LeaderTokenId[taskId][winnerGrpId];
+        _tokenId2Reward[gldTokenId] = DegenMoneyLib.rewardPool2GroupLeader(totalReward);
+
+        // reward pool distributed to group members
+        uint256 memNum = getGroupPeopleNum(taskId, winnerGrpId) - 1;    // ruleout leader
+        for(uint i=0; i<memNum; i++){
+            uint256 tid = _tidxgid2TokenIds[taskId][winnerGrpId][i];
+            if(tid != gldTokenId){
+                _tokenId2Reward[tid] += DegenMoneyLib.rewardPool2GroupMember(totalReward, memNum);
+            }
+        }
+
+        // 2. set all NFTs burnable in this task
         for(uint256 i=0; i<_taskId2TokenIds[taskId].length; i++){
             _groupNFT.setBurnable(_taskId2TokenIds[taskId][i]);
         }
 
-        // insufficent people refund
+        // todo: insufficent people refund
     }
 
     //****************

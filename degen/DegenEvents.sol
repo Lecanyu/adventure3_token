@@ -2,6 +2,9 @@
 pragma solidity ^0.8.6;
 
 interface DegenEvents {
+    // 
+    event onConstruction(address indexed nftAddr);
+
     // fired whenever a task is created
     event onCreateNewTask
     (
