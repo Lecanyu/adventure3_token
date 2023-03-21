@@ -623,19 +623,19 @@
 			]
 		},
 		"degen/DegenMaster.sol": {
-			"keccak256": "0xadb9ee41cdb68aea64800e12ce89ce74aea295886783816b6b8b64d0a804842c",
+			"keccak256": "0xc10855d14f8af0e810dd8e9cc22e5e6aaa8cca4bc8cf7f883ada86224f4315f2",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://3eb6a24adf15bd483f41f64ecf8ca38b992001b601e1acf16ac4ab55c8b94067",
-				"dweb:/ipfs/QmcMemWWNtMraEX784TUx5FX3yWwPuX5FLqgYinzt7woNU"
+				"bzz-raw://faee9a1757bf2412dd6746011e4b9f5ea653dcf4744291389fb0e9a951c16d52",
+				"dweb:/ipfs/QmQ5sUYeo2whUHhJn6HfiwXp5VHeVjirFq6fecfGnRZPRn"
 			]
 		},
 		"degen/DegenMoneyLib.sol": {
-			"keccak256": "0x21679e03f3b34ad20022ba5dab4b61956a5171a907e61c3975b2f5cf7f112dbe",
+			"keccak256": "0xeb0a80f8adfc3cc57b5b72bdb52ac9cc4bfb66eb6d01158d77b340b1abc022a4",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://0f12368a0465951b9fc0ddad7878d8877e421268ab1200cf656ec0d28e03d692",
-				"dweb:/ipfs/Qma21CdbkyJ9ifmtSDZnTd8DrdnVnHmAJoi8LvvQ6ta79x"
+				"bzz-raw://bb6e3402bd7758f444fadf9a55774e8c72313cec2f2d2b0db26c2d900e3e2ea9",
+				"dweb:/ipfs/QmTdBvpHYuZwEgZp9fUH69cVvVfeo5JmBRHMLjE5PHuh57"
 			]
 		},
 		"degen/NFT/GroupNFT.sol": {
