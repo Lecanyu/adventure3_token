@@ -11,8 +11,8 @@ library DegenMoneyLib {
     //****************
     // PARAMS
     //****************
-    uint256 constant private _taskCreateMinFee = 0.01 * 10**18;
-    uint256 constant private _groupCreateMinFee = 0.001 * 10**18;
+    uint256 constant private _taskCreateMinFee = 1000 * 10**18;
+    uint256 constant private _groupCreateMinFee = 100 * 10**18;
     uint256 constant private _a = 30;        // 门票金额给队长的比例（%）
     uint256 constant private _b = 500;       // 门票金额投入奖池的比例（%）
     uint256 constant private _c = 100;       // 队长的最终奖池收益比例（%）
@@ -20,8 +20,8 @@ library DegenMoneyLib {
     uint256 constant private _v = 10;       // 第一名队伍比第二名队伍人数多_v时，触发MonopolyPenalty
 
     uint256 constant private _alpha = 2;
-    uint256 constant private _beta = 1;               // beta = _beta / _denominator
-    uint256 constant private _gamma = 0.0001 * 10**18;    // absolute init ticket price threshold
+    uint256 constant private _beta = 10;               // beta = _beta / _denominator
+    uint256 constant private _gamma = 5 * 10**18;    // absolute init ticket price threshold
     uint256 constant private _denominator = 1000;
 
     function taskCreateMinFee() public pure returns (uint256 money) {

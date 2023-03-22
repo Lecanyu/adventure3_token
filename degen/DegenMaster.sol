@@ -1,20 +1,9 @@
-/*
-to test current all interfaces
-
-todo: 
-1. implement dummy USDT
-2. NFT with image
-3. refund logic
-*/
-
-
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.12;
 
 import "./DegenEvents.sol";
 import "./DegenMoneyLib.sol";
-import "./NFT/GroupNFT.sol";
-import "../utils/StringUtils.sol";
+import "./GroupNFT.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
@@ -27,10 +16,10 @@ contract DegenMaster is DegenEvents {
     address private _degenManager;
 
     //****************
-    // only use specific token 
+    // use specific token 
     //**************** 
-    // address constant private _rewardTokenAddr = 0xD4Fc541236927E2EAf8F27606bD7309C1Fc2cbee;
-    // IERC20 private _rewardToken;
+    address constant private _rewardTokenAddr = 0xd9145CCE52D386f254917e481eB44e9943F39138; // need to set the token contract addr
+    IERC20 private _rewardToken;
 
     //****************
     // NFT
@@ -87,15 +76,44 @@ contract DegenMaster is DegenEvents {
     mapping (uint256 => mapping(uint256 => uint256[])) private _tidxgid2TokenIds;
     mapping (uint256 => mapping(uint256 => uint256)) private _tidxgid2LeaderTokenId;
 
-    //****************
-    // TEMP DATA 
-    //****************
+    // TEMP DATA for calculation
     mapping (address => bool) private _uniqueAddrs;
+
+
+    //****************
+    // modifiers
+    //****************
+    modifier onlyManager() {
+        require(msg.sender == _degenManager, "The caller must be manager.");
+        _;
+    }
+
+    modifier onlyManagerOrTaskOwner(uint256 taskId) {
+        require(msg.sender == _taskId2Detail[taskId].ownerAddress || msg.sender == _degenManager, "The caller must be task owner or manager.");
+        _;
+    }
+
+    modifier isHuman() {
+        /**
+        * @dev prevents contracts from interacting with fomo3d 
+        */
+        address addr = msg.sender;
+        uint256 codeLength;
+        
+        assembly {codeLength := extcodesize(addr)}
+        require(codeLength == 0, "sorry humans only");
+        _;
+    }
+
+    modifier isNFTContract() {
+        require(msg.sender == address(_groupNFT), "only internal NFT contract");
+        _;
+    }
 
 
     constructor() {
         _groupNFT = new GroupNFT("DegenTaskNFT", "DTN", address(this));
-        // _rewardToken = ERC20(_rewardTokenAddr);
+        _rewardToken = IERC20(_rewardTokenAddr);
         _degenManager = msg.sender;
 
         emit onConstruction(address(_groupNFT));
@@ -121,6 +139,14 @@ contract DegenMaster is DegenEvents {
             return false;
         }
         return true;
+    }
+
+    function getTaskCreateFee() public pure returns (uint256){
+        return DegenMoneyLib.taskCreateMinFee();
+    }
+
+    function getTaskName(uint256 taskId) public view returns (string memory){
+        return _taskId2Detail[taskId].taskName;
     }
 
     function getTaskRewardPool(uint256 taskId) public view returns (uint256 totalReward){
@@ -233,6 +259,14 @@ contract DegenMaster is DegenEvents {
         return true;
     }
 
+    function getGroupName(uint256 taskId, uint256 groupId) public view returns (string memory){
+        return _tidxgid2Detail[taskId][groupId].groupName;
+    }
+
+    function getGroupCreateFee() public pure returns (uint256){
+        return DegenMoneyLib.groupCreateMinFee();
+    }
+
     function getGroupPeopleNum(uint256 taskId, uint256 groupId) public view returns (uint256 num){
         return _tidxgid2TokenIds[taskId][groupId].length;
     }
@@ -276,11 +310,11 @@ contract DegenMaster is DegenEvents {
         );
     }
 
-    function payReward(uint256 tokenId, address payable player)
+    function payReward(uint256 tokenId, address player)
         isNFTContract
         external
     {
-        player.transfer(_tokenId2Reward[tokenId]);
+        _rewardToken.transfer(player, _tokenId2Reward[tokenId]);
         _tokenId2Reward[tokenId] = 0;
     }
 
@@ -292,46 +326,6 @@ contract DegenMaster is DegenEvents {
     //     return _pID2TokenId[playerAddr];
     // }
     
-    
-    //****************
-    // modifiers
-    //****************
-    modifier onlyManager() {
-        require(msg.sender == _degenManager, "The caller must be manager.");
-        _;
-    }
-
-    modifier onlyManagerOrTaskOwner(uint256 taskId) {
-        require(msg.sender == _taskId2Detail[taskId].ownerAddress || msg.sender == _degenManager, "The caller must be task owner or manager.");
-        _;
-    }
-
-    modifier isHuman() {
-        /**
-        * @dev prevents contracts from interacting with fomo3d 
-        */
-        address addr = msg.sender;
-        uint256 codeLength;
-        
-        assembly {codeLength := extcodesize(addr)}
-        require(codeLength == 0, "sorry humans only");
-        _;
-    }
-
-    modifier isPayEnoughForTaskCreate() {
-        require(msg.value >= DegenMoneyLib.taskCreateMinFee(), "isPayEnoughForTaskCreate failed");
-        _;
-    }
-
-    modifier isPayEnoughForGroupCreate() {
-        require(msg.value >= DegenMoneyLib.groupCreateMinFee(), "isPayEnoughForGroupCreate failed");
-        _;
-    }
-
-    modifier isNFTContract() {
-        require(msg.sender == address(_groupNFT), "only internal NFT contract");
-        _;
-    }
 
     //****************
     // player function
@@ -349,10 +343,12 @@ contract DegenMaster is DegenEvents {
     //****************
     function createTask(string memory taskName, uint256 taskStartStamp, uint256 taskEndStamp) 
         isHuman
-        isPayEnoughForTaskCreate
-        public payable  
+        public  payable
         returns (uint256)
     {
+        // isPayEnoughForTaskCreate
+        require(_rewardToken.transferFrom(msg.sender, address(this), getTaskCreateFee()), string.concat("createTaskFee should be large than ", Strings.toString(getTaskCreateFee())));
+
         uint256 taskId = _taskCounter.current();
         _taskCounter.increment();
         
@@ -362,12 +358,12 @@ contract DegenMaster is DegenEvents {
             taskId: taskId,
             ownerAddress: msg.sender,
             ownerName: _pID2Name[msg.sender],
-            amountPaid: msg.value,
+            amountPaid: DegenMoneyLib.taskCreateMinFee(),
             createTimeStamp: block.timestamp,
             taskStartStamp: taskStartStamp,
             taskEndStamp: taskEndStamp,
 
-            totalRewardPool: msg.value,
+            totalRewardPool: DegenMoneyLib.taskCreateMinFee(),
             totalGroupNum: 0,
             hasEnd: false
         });
@@ -400,7 +396,7 @@ contract DegenMaster is DegenEvents {
 
         // reward pool distributed to group leader 
         uint256 gldTokenId = _tidxgid2LeaderTokenId[taskId][winnerGrpId];
-        _tokenId2Reward[gldTokenId] = DegenMoneyLib.rewardPool2GroupLeader(totalReward);
+        _tokenId2Reward[gldTokenId] += DegenMoneyLib.rewardPool2GroupLeader(totalReward);
 
         // reward pool distributed to group members
         uint256 memNum = getGroupPeopleNum(taskId, winnerGrpId) - 1;    // ruleout leader
@@ -430,12 +426,14 @@ contract DegenMaster is DegenEvents {
     //****************
     function createGroup(string memory groupName, uint256 affiliateTaskID) 
         isHuman
-        isPayEnoughForGroupCreate
-        public payable  
+        public payable
         returns (uint256)
     {
         // judge if the task exist
         require(isTaskActive(affiliateTaskID), "task must be active");
+
+        // isPayEnoughForGroupCreate
+        require(_rewardToken.transferFrom(msg.sender, address(this), getGroupCreateFee()), string.concat("createGroupFee should be large than ", Strings.toString(getGroupCreateFee())));
 
         // group id
         uint256 groupId = getTaskGroupNum(affiliateTaskID);
@@ -462,7 +460,7 @@ contract DegenMaster is DegenEvents {
 
         // task data
         _taskId2Detail[affiliateTaskID].totalGroupNum += 1;
-        _taskId2Detail[affiliateTaskID].totalRewardPool += msg.value;
+        _taskId2Detail[affiliateTaskID].totalRewardPool += DegenMoneyLib.groupCreateMinFee();
         _taskId2TokenIds[affiliateTaskID].push(tokenId);
 
         emit onCreateNewGroup
@@ -488,7 +486,7 @@ contract DegenMaster is DegenEvents {
 
         // isPayEnoughForEnterGroup
         uint256 ticketPrice = getCurrentJoinGroupPrice(affiliateTaskID, groupId);
-        require(msg.value >= ticketPrice, string.concat("joinGroupFee should be large than ", Strings.toString(ticketPrice)));  
+        require(_rewardToken.transferFrom(msg.sender, address(this), ticketPrice), string.concat("joinGroupFee should be large than ", Strings.toString(ticketPrice)));
 
         // mint a NFT for group member
         uint256 tokenId = _groupNFT.safeMint(msg.sender);
@@ -504,18 +502,18 @@ contract DegenMaster is DegenEvents {
         _tidxgid2TokenIds[affiliateTaskID][groupId].push(tokenId);
 
         // money enter the reward pool
-        _taskId2Detail[affiliateTaskID].totalRewardPool += DegenMoneyLib.ticketIncome2RewardPool(msg.value);
+        _taskId2Detail[affiliateTaskID].totalRewardPool += DegenMoneyLib.ticketIncome2RewardPool(ticketPrice);
 
         // money distributed to group leader 
         uint256 gldTokenId = _tidxgid2LeaderTokenId[affiliateTaskID][groupId];
-        _tokenId2Reward[gldTokenId] = DegenMoneyLib.ticketIncome2GroupLeader(msg.value);
+        _tokenId2Reward[gldTokenId] = DegenMoneyLib.ticketIncome2GroupLeader(ticketPrice);
 
         // money distributed to group members
         uint256 memNum = getGroupPeopleNum(affiliateTaskID, groupId) - 1;    // ruleout leader
         for(uint i=0; i<_tidxgid2TokenIds[affiliateTaskID][groupId].length; i++){
             uint256 tid = _tidxgid2TokenIds[affiliateTaskID][groupId][i];
             if(tid != gldTokenId){
-                _tokenId2Reward[tid] += DegenMoneyLib.ticketIncome2GroupMember(msg.value, memNum);
+                _tokenId2Reward[tid] += DegenMoneyLib.ticketIncome2GroupMember(ticketPrice, memNum);
             }
         }
 
@@ -525,7 +523,7 @@ contract DegenMaster is DegenEvents {
                 groupId,
                 msg.sender,
                 _pID2Name[msg.sender],
-                msg.value,
+                ticketPrice,
                 block.timestamp
             );
         
