@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "./DegenMaster.sol";
 
 
-contract GroupNFT is ERC721, ERC721Burnable {
+contract DegenNFT is ERC721, ERC721Burnable {
     using Counters for Counters.Counter;
 
     mapping(uint256 => bool) private _tokenId2Burnable;

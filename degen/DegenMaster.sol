@@ -3,7 +3,7 @@ pragma solidity ^0.8.12;
 
 import "./DegenEvents.sol";
 import "./DegenMoneyLib.sol";
-import "./GroupNFT.sol";
+import "./DegenNFT.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
@@ -18,13 +18,13 @@ contract DegenMaster is DegenEvents {
     //****************
     // use specific token 
     //**************** 
-    address constant private _rewardTokenAddr = 0xd9145CCE52D386f254917e481eB44e9943F39138; // need to set the token contract addr
+    address constant private _rewardTokenAddr = 0x611A841b019Aa99aa47e390d9673d7736ECFD227; // need to set the token contract addr
     IERC20 private _rewardToken;
 
     //****************
     // NFT
     //****************
-    GroupNFT private _groupNFT;
+    DegenNFT private _degenNFT;
     mapping (uint256 => uint256) private _tokenId2TaskId;
     mapping (uint256 => uint256) private _tokenId2GroupId;
     mapping (uint256 => uint256) private _tokenId2Reward;
@@ -106,17 +106,17 @@ contract DegenMaster is DegenEvents {
     }
 
     modifier isNFTContract() {
-        require(msg.sender == address(_groupNFT), "only internal NFT contract");
+        require(msg.sender == address(_degenNFT), "only internal NFT contract");
         _;
     }
 
 
     constructor() {
-        _groupNFT = new GroupNFT("DegenTaskNFT", "DTN", address(this));
+        _degenNFT = new DegenNFT("DegenTaskNFT", "DTN", address(this));
         _rewardToken = IERC20(_rewardTokenAddr);
         _degenManager = msg.sender;
 
-        emit onConstruction(address(_groupNFT));
+        emit onConstruction(address(_degenNFT));
     }
 
     //****************
@@ -415,7 +415,7 @@ contract DegenMaster is DegenEvents {
 
         // 2. set all NFTs burnable in this task
         for(uint256 i=0; i<_taskId2TokenIds[taskId].length; i++){
-            _groupNFT.setBurnable(_taskId2TokenIds[taskId][i]);
+            _degenNFT.setBurnable(_taskId2TokenIds[taskId][i]);
         }
 
         // todo: insufficent people refund
@@ -439,7 +439,7 @@ contract DegenMaster is DegenEvents {
         uint256 groupId = getTaskGroupNum(affiliateTaskID);
 
         // mint leader NFT
-        uint256 tokenId = _groupNFT.safeMint(msg.sender);
+        uint256 tokenId = _degenNFT.safeMint(msg.sender);
         _tokenId2TaskId[tokenId] = affiliateTaskID;
         _tokenId2GroupId[tokenId] = groupId;
         _tokenId2Reward[tokenId] = 0;
@@ -489,7 +489,7 @@ contract DegenMaster is DegenEvents {
         require(_rewardToken.transferFrom(msg.sender, address(this), ticketPrice), string.concat("joinGroupFee should be large than ", Strings.toString(ticketPrice)));
 
         // mint a NFT for group member
-        uint256 tokenId = _groupNFT.safeMint(msg.sender);
+        uint256 tokenId = _degenNFT.safeMint(msg.sender);
         _tokenId2TaskId[tokenId] = affiliateTaskID;
         _tokenId2GroupId[tokenId] = groupId;
         _tokenId2Reward[tokenId] = 0;

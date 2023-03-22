@@ -7,12 +7,13 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 library DegenMoneyLib {
     event LogUint256(string, uint256);
 
-    uint256 constant private _decimal = 10**18;
+    uint256 constant private _decimal = 10**6;
+    
     //****************
     // PARAMS
     //****************
-    uint256 constant private _taskCreateMinFee = 1000 * 10**18;
-    uint256 constant private _groupCreateMinFee = 100 * 10**18;
+    uint256 constant private _taskCreateMinFee = 1000 * 10**6;
+    uint256 constant private _groupCreateMinFee = 100 * 10**6;
     uint256 constant private _a = 30;        // 门票金额给队长的比例（%）
     uint256 constant private _b = 500;       // 门票金额投入奖池的比例（%）
     uint256 constant private _c = 100;       // 队长的最终奖池收益比例（%）
@@ -21,7 +22,7 @@ library DegenMoneyLib {
 
     uint256 constant private _alpha = 2;
     uint256 constant private _beta = 10;               // beta = _beta / _denominator
-    uint256 constant private _gamma = 5 * 10**18;    // absolute init ticket price threshold
+    uint256 constant private _gamma = 5 * 10**6;    // absolute init ticket price threshold
     uint256 constant private _denominator = 1000;
 
     function taskCreateMinFee() public pure returns (uint256 money) {
@@ -59,7 +60,7 @@ library DegenMoneyLib {
         require(flag, "Number overflow occurs when calculate ticket price in _beta*i**_alpha.");
 
         (flag, tp) = SafeMath.tryMul(tp, _decimal);
-        require(flag, "Number overflow occurs when calculate ticket price in (_beta/_denominator*i**_alpha)*10**18.");
+        require(flag, "Number overflow occurs when calculate ticket price in (_beta/_denominator*i**_alpha)*_decimal.");
 
         (flag, tp) = SafeMath.tryDiv(tp, _denominator);
         require(flag, "Number overflow occurs when calculate ticket price in _beta/_denominator*i**_alpha.");
@@ -68,7 +69,7 @@ library DegenMoneyLib {
         require(flag, "Number overflow occurs when calculate ticket price in _beta/_denominator*i**_alpha + gamma.");
 
 
-        // uint256 tp = _beta * ith ** _alpha * 10**18 / _denominator + _gamma;
+        // uint256 tp = _beta * ith ** _alpha * _decimal / _denominator + _gamma;
 
         bool isMonopolyPenalty;
         if(firstGrpId >= 0 && SecondGrpId >= 0){

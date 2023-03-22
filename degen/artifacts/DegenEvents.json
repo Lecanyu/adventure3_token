@@ -56,6 +56,19 @@
 			"inputs": [
 				{
 					"indexed": true,
+					"internalType": "address",
+					"name": "nftAddr",
+					"type": "address"
+				}
+			],
+			"name": "onConstruction",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
 					"internalType": "uint256",
 					"name": "affiliateTaskID",
 					"type": "uint256"

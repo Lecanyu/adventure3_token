@@ -470,11 +470,11 @@
 			]
 		},
 		"degen/DummyUSDT.sol": {
-			"keccak256": "0x1ef61b9e12b444f56a0ed4b4b934a2e908da0b20cc55ad8080cc01ddfcd3fc7f",
+			"keccak256": "0x2aa5efb37fbcf0c109df9326c1dd81701de3037d557bb50f6e4738c746b32739",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://1f6fc462cd6727100bce13c59b337b262a5151dc5f3c74223a1e9b37980103b6",
-				"dweb:/ipfs/QmWgiJRpmaEFPRbfCuQ7RQ1GuUAoBHDq9MPuYkgVsiLrkn"
+				"bzz-raw://7454cae92b0a84830a205b218ebdc9e06895423fe0d4afa31b9ba78187c9d152",
+				"dweb:/ipfs/QmXoGYSV3uTnxN5EYS1vXSzuBWXtRguwzcqapocCfWuGWm"
 			]
 		}
 	},
