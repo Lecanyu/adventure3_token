@@ -10,6 +10,14 @@ import "./DegenMaster.sol";
 contract DegenNFT is ERC721, ERC721Burnable {
     using Counters for Counters.Counter;
 
+    // the metadata standard, see https://docs.opensea.io/docs/metadata-standards
+    // metadata files
+    string[] private _cids = [
+        "QmazF8q2BVT8uzZYvMktehrrMMSXTRRzx2DXmX4SP9FVpr",
+        "QmQZbQse5BMQa46KCHVWPua3JwpGE5HiwYc1jVyUp6WhZZ",
+        "QmWBSgnbKMjydAXXh2EgCABcdcDp9y7bsRmNdWvX9yEai3",
+        "QmPNudLym7BBx3zXmbVJ3cNPKbmzpLipFKFaTzxLN3yQYu"
+    ];
     mapping(uint256 => bool) private _tokenId2Burnable;
     Counters.Counter private _tokenIdCounter;
     DegenMaster private _degenMaster;
@@ -21,6 +29,10 @@ contract DegenNFT is ERC721, ERC721Burnable {
 
     constructor(string memory name, string memory symbol, address degenMasterAddr) ERC721(name, symbol) {
         _degenMaster = DegenMaster(degenMasterAddr);
+    }
+
+    function _baseURI() internal pure override returns (string memory) {
+        return "ipfs://";
     }
 
     //****************
@@ -35,6 +47,15 @@ contract DegenNFT is ERC721, ERC721Burnable {
 
     function getBurnable(uint256 tokenId) public view returns (bool) {
         return _tokenId2Burnable[tokenId];
+    }
+
+
+    function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
+        _requireMinted(tokenId);
+
+        string memory baseURI = _baseURI();
+        string memory sufix = _cids[tokenId % _cids.length];
+        return bytes(baseURI).length > 0 ? string(abi.encodePacked(baseURI, sufix)) : "";
     }
 
 
