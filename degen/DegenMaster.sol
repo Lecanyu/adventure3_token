@@ -297,9 +297,12 @@ contract DegenMaster is DegenEvents {
     {
         _tokenId2PlayerAddr[tokenId] = to;
 
-        _tidxgid2Detail[_tokenId2TaskId[tokenId]][_tokenId2GroupId[tokenId]].ownerAddress = to;
-        _tidxgid2Detail[_tokenId2TaskId[tokenId]][_tokenId2GroupId[tokenId]].ownerName = _pID2Name[to];
-
+        // group leader change
+        if(_tidxgid2LeaderTokenId[_tokenId2TaskId[tokenId]][_tokenId2GroupId[tokenId]] == tokenId){
+            _tidxgid2Detail[_tokenId2TaskId[tokenId]][_tokenId2GroupId[tokenId]].ownerAddress = to;
+            _tidxgid2Detail[_tokenId2TaskId[tokenId]][_tokenId2GroupId[tokenId]].ownerName = _pID2Name[to];
+        }
+        
         emit onNFTTraded(
             _tokenId2TaskId[tokenId],
             _tokenId2GroupId[tokenId],

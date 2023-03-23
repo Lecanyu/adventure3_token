@@ -13,10 +13,10 @@ contract DegenNFT is ERC721, ERC721Burnable {
     // the metadata standard, see https://docs.opensea.io/docs/metadata-standards
     // metadata files
     string[] private _cids = [
-        "QmazF8q2BVT8uzZYvMktehrrMMSXTRRzx2DXmX4SP9FVpr",
-        "QmQZbQse5BMQa46KCHVWPua3JwpGE5HiwYc1jVyUp6WhZZ",
-        "QmWBSgnbKMjydAXXh2EgCABcdcDp9y7bsRmNdWvX9yEai3",
-        "QmPNudLym7BBx3zXmbVJ3cNPKbmzpLipFKFaTzxLN3yQYu"
+        "QmW77aDxNibQs7ASoDUMJrUEDh3BoWYU3ATdtY9CwQZYcb",
+        "QmXkyBSJQC82emgZYmn5NsotcW2VM9pNmCYBjKSKpCtFQL",
+        "QmRe2RdqnLnVLY3RzPg23FPEDtM5DjZS8LMb7VkEXwYK5X",
+        "QmVxD7LKSnDug7GDkTnmNt6jkZsA7zZPHmhNdiZdsCom5n"
     ];
     mapping(uint256 => bool) private _tokenId2Burnable;
     Counters.Counter private _tokenIdCounter;

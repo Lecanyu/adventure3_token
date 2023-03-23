@@ -15,6 +15,19 @@
 				"inputs": [
 					{
 						"indexed": true,
+						"internalType": "address",
+						"name": "nftAddr",
+						"type": "address"
+					}
+				],
+				"name": "onConstruction",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
 						"internalType": "uint256",
 						"name": "affiliateTaskID",
 						"type": "uint256"
@@ -267,6 +280,67 @@
 						"type": "uint256"
 					}
 				],
+				"name": "getCurrentJoinGroupPrice",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "price",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getGroupCreateFee",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "pure",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "taskId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "groupId",
+						"type": "uint256"
+					}
+				],
+				"name": "getGroupName",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "taskId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "groupId",
+						"type": "uint256"
+					}
+				],
 				"name": "getGroupPeopleNum",
 				"outputs": [
 					{
@@ -276,6 +350,19 @@
 					}
 				],
 				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getTaskCreateFee",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "pure",
 				"type": "function"
 			},
 			{
@@ -326,6 +413,25 @@
 						"internalType": "uint256",
 						"name": "num",
 						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "taskId",
+						"type": "uint256"
+					}
+				],
+				"name": "getTaskName",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
 					}
 				],
 				"stateMutability": "view",
@@ -505,7 +611,7 @@
 						"type": "uint256"
 					},
 					{
-						"internalType": "address payable",
+						"internalType": "address",
 						"name": "player",
 						"type": "address"
 					}
@@ -669,43 +775,35 @@
 			]
 		},
 		"degen/DegenEvents.sol": {
-			"keccak256": "0x70e6dcc241107578973ac0d504582090834adaea138b33636b8899ac00555af6",
+			"keccak256": "0x6cfa76cd9909b20d13653745d7c8ec65f110e334ce38b9480f400631d4f4b501",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://6195c722bf5e8a88c6a376478561e68c58002e695b761d963e9cbdd63315a2cd",
-				"dweb:/ipfs/Qmey2Wf1qMGtUdo9rJ7abLVEfn9PiEFPWaZW3kjJF2gstS"
+				"bzz-raw://d3c9048a708c8435e87de093c556c007a59a1d7d2649a3f6e0bba0637492ec0d",
+				"dweb:/ipfs/QmaRReHGQfA9aM6go6RGxhwtrPdEpWL36ThkxLTiD7AuvT"
 			]
 		},
 		"degen/DegenMaster.sol": {
-			"keccak256": "0xfb1a1286c686fe71cc9bace048d4622a0b5613009286f8a35ee1b1fd8f4d4e53",
+			"keccak256": "0x75d8e31eea056162b49b7661b39a6a48254557e866e0b02a52f97d1a814c0412",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://33503cba9063d19292adb50fd35c9b218d33fa84786681d7714ce829f07701fa",
-				"dweb:/ipfs/QmSuRXVA9BiAb82sJSsSumzGUX3YQ3manrNVCDyj8M824G"
+				"bzz-raw://710aa7960924094b2fdff0f77f224dec1943c17b756eb2ac3051bd3bd44bf687",
+				"dweb:/ipfs/QmTTxNuv7pocjiRu9wJcmbjFw26uMGtZmN56VzFtA9h8DX"
 			]
 		},
 		"degen/DegenMoneyLib.sol": {
-			"keccak256": "0x952acdd309f8e4fec99e744853335ea19ba63b6c4676843969111c75dc50e0e7",
+			"keccak256": "0x3ab8ec722b3bbaa4f45cdab53c95335cf604daf9ed3562d577f8bb5705772829",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://460b47eaf7b1bcc6f13e982962dc501d8886db4b8f282b5efbcd87a141d46e69",
-				"dweb:/ipfs/QmcASYxmdZmNcJMvb6B3EnkX85sstb4HJzYqATcwd4FbZM"
+				"bzz-raw://e9111fe7a28f66af4ed835c6ea705f0269bb405aba2a1db5d4389ade5e1d022c",
+				"dweb:/ipfs/QmbBQ7kru92wEzJhqUcD4m21fo8EowfdHeBa3dMs28JQuu"
 			]
 		},
-		"degen/NFT/GroupNFT.sol": {
-			"keccak256": "0xf4b113639de9cf1e3e69cbb86d228315e6965d81c30bd489fde4a200c26269ab",
+		"degen/DegenNFT.sol": {
+			"keccak256": "0x18ae371baa88784c5c217e9e10620287d17417ba5688f8470a4c5846264177d2",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://2327d2bf1b0f09c301ac320cee6b42acb379a7710ac9eadd19952274b759ea79",
-				"dweb:/ipfs/QmcX9dhMojZqftzfh9VCcrA2A3KrUtNhKr1uMy5HsVyZfx"
-			]
-		},
-		"utils/StringUtils.sol": {
-			"keccak256": "0xe7d388c2cb4f370fed106c06fe1a2ad786fade1640734676d11a0c3bd4dd9789",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://61ce7a7e53829ca80ad3ae0bb75853f7d8812e26b604449a4acbad3a00685c47",
-				"dweb:/ipfs/QmecAxAupFFms1m7xuvRSTVEKry4sg42Adi5pD7gqvRFoP"
+				"bzz-raw://344929da376605254845da37b8548b659c6f370a05ee8189bf4266fa6db0338a",
+				"dweb:/ipfs/QmbQogVWnHTL2Qxq7AWPZPjshphA8DonMSmgvXpqHpeUc2"
 			]
 		}
 	},
