@@ -186,6 +186,14 @@ contract DegenMaster is DegenEvents {
         return _taskId2Detail[taskId].totalGroupNum;
     }
 
+    function getTaskAllGroupIds(uint256 taskId) public view returns (uint256[] memory) {
+        uint256[] memory gids = new uint256[](_taskId2TokenIds[taskId].length);
+        for(uint256 i=0; i<_taskId2TokenIds[taskId].length; i++){
+            uint256 gid = _tokenId2GroupId[_taskId2TokenIds[taskId][i]];
+            gids[i] = gid;
+        }
+        return gids;
+    }
 
     // return the biggest and second biggest group id
     function groupCompare(uint256 gid1PeopleNum, uint256 gid1Ts, uint256 gid2PeopleNum, uint256 gid2Ts) private pure returns (bool) {
@@ -245,6 +253,7 @@ contract DegenMaster is DegenEvents {
         return (firstGrpId, secondGrpId, firstGrpPeopleNum, secondGrpPeopleNum);
     }
 
+
     //****************
     // group utils
     //****************
@@ -263,15 +272,23 @@ contract DegenMaster is DegenEvents {
         return _tidxgid2Detail[taskId][groupId].groupName;
     }
 
-    function getGroupCreateFee() public pure returns (uint256){
-        return DegenMoneyLib.groupCreateMinFee();
+    function getGroupLeaderAddr(uint256 taskId, uint256 groupId) public view returns (address){
+        return _tidxgid2Detail[taskId][groupId].ownerAddress;
+    }
+
+    function getGroupCreateTimeStamp(uint256 taskId, uint256 groupId) public view returns (uint256){
+        return _tidxgid2Detail[taskId][groupId].createTimeStamp;
     }
 
     function getGroupPeopleNum(uint256 taskId, uint256 groupId) public view returns (uint256 num){
         return _tidxgid2TokenIds[taskId][groupId].length;
     }
 
-    function getCurrentJoinGroupPrice(uint256 taskId, uint256 groupId) public view returns (uint256 price){
+    function getGroupCreateFee() public pure returns (uint256){
+        return DegenMoneyLib.groupCreateMinFee();
+    }
+
+    function getCurrentJoinGroupPrice(uint256 taskId, uint256 groupId) public view returns (uint256){
         require(isGroupActive(taskId, groupId), "group must be active");
 
         // get current group member number, rule out group leader
@@ -286,6 +303,36 @@ contract DegenMaster is DegenEvents {
 
         uint256 ticketPrice = DegenMoneyLib.ticketPrice(grpMemNum + 1, _taskId2Detail[taskId].totalRewardPool, firstGrpId, SecondGrpId, firstGrpPeopleNum, secondGrpPeopleNum);
         return ticketPrice;
+    }
+
+    function getCurrentJoinGroupIncome(uint256 taskId, uint256 groupId) public view returns (uint256){
+        require(isGroupActive(taskId, groupId), "group must be active");
+        // get current group member number, rule out group leader
+        uint256 grpMemNum = getGroupPeopleNum(taskId, groupId) - 1;
+
+        uint256 currentIncome = DegenMoneyLib.ticketIncome2GroupMember(
+            getCurrentJoinGroupPrice(taskId, groupId), 
+            grpMemNum + 1
+        );
+        return currentIncome;
+    }
+
+    function getNextJoinGroupIncome(uint256 taskId, uint256 groupId) public view returns (uint256){
+        require(isGroupActive(taskId, groupId), "group must be active");
+
+        // get current group member number, rule out group leader
+        uint256 grpMemNum = getGroupPeopleNum(taskId, groupId) - 1;
+
+        // get current group status
+        int256 firstGrpId;
+        int256 SecondGrpId;
+        uint256 firstGrpPeopleNum;
+        uint256 secondGrpPeopleNum;
+        (firstGrpId, SecondGrpId, firstGrpPeopleNum, secondGrpPeopleNum) = getTaskFirstSecondGroup(taskId);
+
+        uint256 nextTicketPrice = DegenMoneyLib.ticketPrice(grpMemNum + 2, _taskId2Detail[taskId].totalRewardPool, firstGrpId, SecondGrpId, firstGrpPeopleNum, secondGrpPeopleNum);
+        uint256 nextIncome = DegenMoneyLib.ticketIncome2GroupMember(nextTicketPrice, grpMemNum + 2);
+        return nextIncome;
     }
 
     //****************
@@ -402,10 +449,10 @@ contract DegenMaster is DegenEvents {
         _tokenId2Reward[gldTokenId] += DegenMoneyLib.rewardPool2GroupLeader(totalReward);
 
         // reward pool distributed to group members
-        uint256 memNum = getGroupPeopleNum(taskId, winnerGrpId) - 1;    // ruleout leader
+        uint256 memNum = getGroupPeopleNum(taskId, winnerGrpId);    
         for(uint i=0; i<_tidxgid2TokenIds[taskId][winnerGrpId].length; i++){
             uint256 tid = _tidxgid2TokenIds[taskId][winnerGrpId][i];
-            if(tid != gldTokenId){
+            if(tid != gldTokenId){      // ruleout leader
                 _tokenId2Reward[tid] += DegenMoneyLib.rewardPool2GroupMember(totalReward, memNum);
             }
         }
@@ -512,10 +559,10 @@ contract DegenMaster is DegenEvents {
         _tokenId2Reward[gldTokenId] = DegenMoneyLib.ticketIncome2GroupLeader(ticketPrice);
 
         // money distributed to group members
-        uint256 memNum = getGroupPeopleNum(affiliateTaskID, groupId) - 1;    // ruleout leader
+        uint256 memNum = getGroupPeopleNum(affiliateTaskID, groupId);    
         for(uint i=0; i<_tidxgid2TokenIds[affiliateTaskID][groupId].length; i++){
             uint256 tid = _tidxgid2TokenIds[affiliateTaskID][groupId][i];
-            if(tid != gldTokenId){
+            if(tid != gldTokenId){      // ruleout leader
                 _tokenId2Reward[tid] += DegenMoneyLib.ticketIncome2GroupMember(ticketPrice, memNum);
             }
         }
