@@ -24,6 +24,7 @@ contract DegenMaster is DegenEvents {
     //****************
     // NFT
     //****************
+    uint256 constant private _maxNFTMintNum = 3;
     DegenNFT private _degenNFT;
     mapping (uint256 => uint256) private _tokenId2TaskId;
     mapping (uint256 => uint256) private _tokenId2GroupId;
@@ -34,7 +35,8 @@ contract DegenMaster is DegenEvents {
     //****************
     // PLAYER DATA 
     //****************
-    mapping (address => string) private _pID2Name;
+    mapping (address => string) private _playerAddr2Name;
+    mapping (address => uint256[]) private _playerAddr2TokenIds;
 
 
     //****************
@@ -78,6 +80,7 @@ contract DegenMaster is DegenEvents {
 
     // TEMP DATA for calculation
     mapping (address => bool) private _uniqueAddrs;
+    mapping (uint256 => uint256) private _taskId2NFTNum;
 
 
     //****************
@@ -110,6 +113,24 @@ contract DegenMaster is DegenEvents {
         _;
     }
 
+    modifier isExceedMaxNftNum(uint256 taskId) {
+        bool exceed = false;
+        for(uint256 i=0; i<_playerAddr2TokenIds[msg.sender].length; i++){
+            uint256 tid = _tokenId2TaskId[_playerAddr2TokenIds[msg.sender][i]];
+            if(tid == taskId){
+                _taskId2NFTNum[taskId] += 1;
+                if(_taskId2NFTNum[taskId] >= _maxNFTMintNum){
+                    exceed = true;
+                    break;
+                }
+            }
+        }
+        // restore variable
+        delete _taskId2NFTNum[taskId];
+
+        require(exceed == false, string.concat("Hold NFT number is large than ", Strings.toString(_maxNFTMintNum), " in taskId ", Strings.toString(taskId)));
+        _;
+    }
 
     constructor() {
         _degenNFT = new DegenNFT("DegenTaskNFT", "DTN", address(this));
@@ -119,11 +140,20 @@ contract DegenMaster is DegenEvents {
         emit onConstruction(address(_degenNFT));
     }
 
+    
+
     //****************
     // NFT utils
     //****************
     function getTokenId2Reward(uint256 tokenId) public view returns(uint256 reward) {
         return _tokenId2Reward[tokenId];
+    }
+
+    //****************
+    // player utils
+    //****************
+    function playerAddr2TokenIds(address playerAddr) public view returns (uint256[] memory){
+        return _playerAddr2TokenIds[playerAddr];
     }
 
     //****************
@@ -195,6 +225,21 @@ contract DegenMaster is DegenEvents {
         return gids;
     }
 
+    function getTaskNewestGroupId(uint256 taskId) public view returns (uint256) {
+        uint256 newestGroupId = 0;
+        uint256 newestTs = 9999999999;
+        for(uint256 i=0; i<_taskId2TokenIds[taskId].length; i++){
+            uint256 gid = _tokenId2GroupId[_taskId2TokenIds[taskId][i]];
+            uint256 ts = _tidxgid2Detail[taskId][gid].createTimeStamp;
+            if(ts < newestTs){
+                ts = newestTs;
+                newestGroupId = gid;
+            }
+        }
+        return newestGroupId;
+    }
+
+
     // return the biggest and second biggest group id
     function groupCompare(uint256 gid1PeopleNum, uint256 gid1Ts, uint256 gid2PeopleNum, uint256 gid2Ts) private pure returns (bool) {
         if(gid1PeopleNum > gid2PeopleNum){
@@ -252,7 +297,6 @@ contract DegenMaster is DegenEvents {
 
         return (firstGrpId, secondGrpId, firstGrpPeopleNum, secondGrpPeopleNum);
     }
-
 
     //****************
     // group utils
@@ -344,10 +388,20 @@ contract DegenMaster is DegenEvents {
     {
         _tokenId2PlayerAddr[tokenId] = to;
 
+        for(uint256 i=0; i<_playerAddr2TokenIds[from].length; i++){
+            if(_playerAddr2TokenIds[from][i] == tokenId){   // delete the tokenid 
+                _playerAddr2TokenIds[from][i] = _playerAddr2TokenIds[from][_playerAddr2TokenIds[from].length - 1];
+                _playerAddr2TokenIds[from].pop();
+            }
+        }
+        // add the tokenid
+        _playerAddr2TokenIds[to].push(tokenId);
+        
+
         // group leader change
         if(_tidxgid2LeaderTokenId[_tokenId2TaskId[tokenId]][_tokenId2GroupId[tokenId]] == tokenId){
             _tidxgid2Detail[_tokenId2TaskId[tokenId]][_tokenId2GroupId[tokenId]].ownerAddress = to;
-            _tidxgid2Detail[_tokenId2TaskId[tokenId]][_tokenId2GroupId[tokenId]].ownerName = _pID2Name[to];
+            _tidxgid2Detail[_tokenId2TaskId[tokenId]][_tokenId2GroupId[tokenId]].ownerName = _playerAddr2Name[to];
         }
         
         emit onNFTTraded(
@@ -366,15 +420,14 @@ contract DegenMaster is DegenEvents {
     {
         _rewardToken.transfer(player, _tokenId2Reward[tokenId]);
         _tokenId2Reward[tokenId] = 0;
-    }
 
-    
-    //****************
-    // player utils
-    //****************
-    // function playerAddr2TokenId(address playerAddr) public view returns (uint256){
-    //     return _pID2TokenId[playerAddr];
-    // }
+        for(uint256 i=0; i<_playerAddr2TokenIds[player].length; i++){
+            if(_playerAddr2TokenIds[player][i] == tokenId){   // delete the tokenid 
+                _playerAddr2TokenIds[player][i] = _playerAddr2TokenIds[player][_playerAddr2TokenIds[player].length - 1];
+                _playerAddr2TokenIds[player].pop();
+            }
+        }
+    }
     
 
     //****************
@@ -384,7 +437,7 @@ contract DegenMaster is DegenEvents {
         isHuman 
         public
     {
-        _pID2Name[msg.sender] = name;
+        _playerAddr2Name[msg.sender] = name;
     }
 
 
@@ -407,7 +460,7 @@ contract DegenMaster is DegenEvents {
             taskName: taskName,
             taskId: taskId,
             ownerAddress: msg.sender,
-            ownerName: _pID2Name[msg.sender],
+            ownerName: _playerAddr2Name[msg.sender],
             amountPaid: DegenMoneyLib.taskCreateMinFee(),
             createTimeStamp: block.timestamp,
             taskStartStamp: taskStartStamp,
@@ -476,6 +529,7 @@ contract DegenMaster is DegenEvents {
     //****************
     function createGroup(string memory groupName, uint256 affiliateTaskID) 
         isHuman
+        isExceedMaxNftNum(affiliateTaskID)
         public payable
         returns (uint256)
     {
@@ -495,13 +549,16 @@ contract DegenMaster is DegenEvents {
         _tokenId2Reward[tokenId] = 0;
         _tokenId2PlayerAddr[tokenId] = msg.sender;
 
+        // player data
+        _playerAddr2TokenIds[msg.sender].push(tokenId);
+
         // group data
         GroupDetail memory groupDet = GroupDetail({
             groupName: groupName,
             affiliateTaskID: affiliateTaskID,
             groupId: groupId,
             ownerAddress: msg.sender,
-            ownerName: _pID2Name[msg.sender],
+            ownerName: _playerAddr2Name[msg.sender],
             createTimeStamp: block.timestamp
         });
         _tidxgid2Detail[affiliateTaskID][groupId] = groupDet;
@@ -528,6 +585,7 @@ contract DegenMaster is DegenEvents {
 
     function joinGroup(uint256 groupId, uint256 affiliateTaskID) 
         isHuman
+        isExceedMaxNftNum(affiliateTaskID)
         public payable  
         returns (uint256)
     {
@@ -544,6 +602,9 @@ contract DegenMaster is DegenEvents {
         _tokenId2GroupId[tokenId] = groupId;
         _tokenId2Reward[tokenId] = 0;
         _tokenId2PlayerAddr[tokenId] = msg.sender;
+
+        // player data
+        _playerAddr2TokenIds[msg.sender].push(tokenId);
 
         // task data
         _taskId2TokenIds[affiliateTaskID].push(tokenId);
@@ -572,7 +633,7 @@ contract DegenMaster is DegenEvents {
                 affiliateTaskID,
                 groupId,
                 msg.sender,
-                _pID2Name[msg.sender],
+                _playerAddr2Name[msg.sender],
                 ticketPrice,
                 block.timestamp
             );
