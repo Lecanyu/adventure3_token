@@ -496,7 +496,7 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": false,
+			"enabled": true,
 			"runs": 200
 		},
 		"remappings": []
@@ -623,11 +623,11 @@
 			]
 		},
 		"degen/DegenMaster.sol": {
-			"keccak256": "0x1af645b034e953640af1975ef370fd2a743656386447bc018247262eb5155203",
+			"keccak256": "0xdf5a440d8a9b4781b288b51463becd66af437a981caee81372ff88750419f1c8",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://bd85e3ddedc2a5aa11ffd7e8477dd700e5127e58b64162d53c34534f80ad0486",
-				"dweb:/ipfs/QmaYD7qRNYqFDDfzpb7aZtXbgzHPzbUtTzB69cU9Ykz8LT"
+				"bzz-raw://1ae85efce774b6750980f8c08c201f815cf9fcc0206edc5d69ec89c762d2f8dc",
+				"dweb:/ipfs/QmZfuRbwzs2Jy4woURKCTauv4HUMugsf3Kj3rhxNx93ZV8"
 			]
 		},
 		"degen/DegenMoneyLib.sol": {

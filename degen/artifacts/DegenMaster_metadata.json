@@ -560,6 +560,25 @@
 						"type": "uint256"
 					}
 				],
+				"name": "getTaskNewestGroupId",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "taskId",
+						"type": "uint256"
+					}
+				],
 				"name": "getTaskPeopleNum",
 				"outputs": [
 					{
@@ -739,6 +758,25 @@
 			{
 				"inputs": [
 					{
+						"internalType": "address",
+						"name": "playerAddr",
+						"type": "address"
+					}
+				],
+				"name": "playerAddr2TokenIds",
+				"outputs": [
+					{
+						"internalType": "uint256[]",
+						"name": "",
+						"type": "uint256[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "string",
 						"name": "name",
 						"type": "string"
@@ -771,7 +809,7 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": false,
+			"enabled": true,
 			"runs": 200
 		},
 		"remappings": []
@@ -898,11 +936,11 @@
 			]
 		},
 		"degen/DegenMaster.sol": {
-			"keccak256": "0x1af645b034e953640af1975ef370fd2a743656386447bc018247262eb5155203",
+			"keccak256": "0x5c2cdcb453072b6db3a9900b40e59c61a2681e4296253bd44abc02db3437c301",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://bd85e3ddedc2a5aa11ffd7e8477dd700e5127e58b64162d53c34534f80ad0486",
-				"dweb:/ipfs/QmaYD7qRNYqFDDfzpb7aZtXbgzHPzbUtTzB69cU9Ykz8LT"
+				"bzz-raw://4c7e0f3374686e84cf94313d64661e5354a910b76603f0340501d1e141787906",
+				"dweb:/ipfs/Qmd4cXSdRXNgLtxpSCVUSyLbcLXv79jRAvuqkWicR6pZhd"
 			]
 		},
 		"degen/DegenMoneyLib.sol": {

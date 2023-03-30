@@ -18,7 +18,7 @@ contract DegenMaster is DegenEvents {
     //****************
     // use specific token 
     //**************** 
-    address constant private _rewardTokenAddr = 0x611A841b019Aa99aa47e390d9673d7736ECFD227; // need to set the token contract addr
+    address constant private _rewardTokenAddr = 0xDA0bab807633f07f013f94DD0E6A4F96F8742B53; // need to set the token contract addr
     IERC20 private _rewardToken;
 
     //****************
@@ -152,8 +152,14 @@ contract DegenMaster is DegenEvents {
     //****************
     // player utils
     //****************
-    function playerAddr2TokenIds(address playerAddr) public view returns (uint256[] memory){
-        return _playerAddr2TokenIds[playerAddr];
+    function playerAddr2TaskIdsGroupIdsTokenIds(address playerAddr) public view returns (uint256[] memory, uint256[] memory, uint256[] memory){
+        uint256[] memory tids = new uint256[](_playerAddr2TokenIds[playerAddr].length);
+        uint256[] memory gids = new uint256[](_playerAddr2TokenIds[playerAddr].length);
+        for(uint256 i=0; i<_playerAddr2TokenIds[playerAddr].length; i++){
+            tids[i] = _tokenId2TaskId[_playerAddr2TokenIds[playerAddr][i]];
+            gids[i] = _tokenId2GroupId[_playerAddr2TokenIds[playerAddr][i]];
+        }
+        return (tids, gids, _playerAddr2TokenIds[playerAddr]);
     }
 
     //****************
@@ -216,6 +222,7 @@ contract DegenMaster is DegenEvents {
         return _taskId2Detail[taskId].totalGroupNum;
     }
 
+    // get all group ids in a specific task (// return value may repeat)
     function getTaskAllGroupIds(uint256 taskId) public view returns (uint256[] memory) {
         uint256[] memory gids = new uint256[](_taskId2TokenIds[taskId].length);
         for(uint256 i=0; i<_taskId2TokenIds[taskId].length; i++){
@@ -324,6 +331,7 @@ contract DegenMaster is DegenEvents {
         return _tidxgid2Detail[taskId][groupId].createTimeStamp;
     }
 
+    // the total people in group, including the leader
     function getGroupPeopleNum(uint256 taskId, uint256 groupId) public view returns (uint256 num){
         return _tidxgid2TokenIds[taskId][groupId].length;
     }
@@ -349,6 +357,7 @@ contract DegenMaster is DegenEvents {
         return ticketPrice;
     }
 
+    // instant earn
     function getCurrentJoinGroupIncome(uint256 taskId, uint256 groupId) public view returns (uint256){
         require(isGroupActive(taskId, groupId), "group must be active");
         // get current group member number, rule out group leader
@@ -361,6 +370,7 @@ contract DegenMaster is DegenEvents {
         return currentIncome;
     }
 
+    // estimate next player earn
     function getNextJoinGroupIncome(uint256 taskId, uint256 groupId) public view returns (uint256){
         require(isGroupActive(taskId, groupId), "group must be active");
 
@@ -378,6 +388,7 @@ contract DegenMaster is DegenEvents {
         uint256 nextIncome = DegenMoneyLib.ticketIncome2GroupMember(nextTicketPrice, grpMemNum + 2);
         return nextIncome;
     }
+
 
     //****************
     // NFT contract call degen utils
@@ -433,12 +444,12 @@ contract DegenMaster is DegenEvents {
     //****************
     // player function
     //****************
-    function registerPlayerName(string memory name) 
-        isHuman 
-        public
-    {
-        _playerAddr2Name[msg.sender] = name;
-    }
+    // function registerPlayerName(string memory name) 
+    //     isHuman 
+    //     public
+    // {
+    //     _playerAddr2Name[msg.sender] = name;
+    // }
 
 
     //****************
@@ -502,7 +513,7 @@ contract DegenMaster is DegenEvents {
         _tokenId2Reward[gldTokenId] += DegenMoneyLib.rewardPool2GroupLeader(totalReward);
 
         // reward pool distributed to group members
-        uint256 memNum = getGroupPeopleNum(taskId, winnerGrpId);    
+        uint256 memNum = getGroupPeopleNum(taskId, winnerGrpId) - 1;    
         for(uint i=0; i<_tidxgid2TokenIds[taskId][winnerGrpId].length; i++){
             uint256 tid = _tidxgid2TokenIds[taskId][winnerGrpId][i];
             if(tid != gldTokenId){      // ruleout leader
@@ -617,10 +628,10 @@ contract DegenMaster is DegenEvents {
 
         // money distributed to group leader 
         uint256 gldTokenId = _tidxgid2LeaderTokenId[affiliateTaskID][groupId];
-        _tokenId2Reward[gldTokenId] = DegenMoneyLib.ticketIncome2GroupLeader(ticketPrice);
+        _tokenId2Reward[gldTokenId] += DegenMoneyLib.ticketIncome2GroupLeader(ticketPrice);
 
         // money distributed to group members
-        uint256 memNum = getGroupPeopleNum(affiliateTaskID, groupId);    
+        uint256 memNum = getGroupPeopleNum(affiliateTaskID, groupId) - 1;    
         for(uint i=0; i<_tidxgid2TokenIds[affiliateTaskID][groupId].length; i++){
             uint256 tid = _tidxgid2TokenIds[affiliateTaskID][groupId][i];
             if(tid != gldTokenId){      // ruleout leader

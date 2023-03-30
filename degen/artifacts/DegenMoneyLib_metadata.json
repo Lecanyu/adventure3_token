@@ -236,11 +236,11 @@
 			]
 		},
 		"degen/DegenMoneyLib.sol": {
-			"keccak256": "0x3ab8ec722b3bbaa4f45cdab53c95335cf604daf9ed3562d577f8bb5705772829",
+			"keccak256": "0xb1f410db146f68465251f9dc7d65ba90df550deaf008fa32ce63f7ca1403b508",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://e9111fe7a28f66af4ed835c6ea705f0269bb405aba2a1db5d4389ade5e1d022c",
-				"dweb:/ipfs/QmbBQ7kru92wEzJhqUcD4m21fo8EowfdHeBa3dMs28JQuu"
+				"bzz-raw://0510c2ac7c329a42bfe58dc1d2b67e4be14c1d79bcd984fe82304d3fa5ff802e",
+				"dweb:/ipfs/QmWfXPXx5Gt5tVSbaoVdV2bY3rzy3ZY4aGhNQLT13ovKH6"
 			]
 		}
 	},
