@@ -15,7 +15,7 @@ library DegenMoneyLib {
     uint256 constant private _taskCreateMinFee = 1000 * 10**6;
     uint256 constant private _groupCreateMinFee = 50 * 10**6;
     uint256 constant private _a = 30;        // 门票金额给队长的比例（%）
-    uint256 constant private _b = 500;       // 门票金额投入奖池的比例（%）
+    uint256 constant private _b = 600;       // 门票金额投入奖池的比例（%）
     uint256 constant private _c = 200;       // 队长的最终奖池收益比例（%）
     uint256 constant private _p = 100;       // MonopolyPenalty比例（%）
     uint256 constant private _v = 10;       // 第一名队伍比第二名队伍人数多_v时，触发MonopolyPenalty
