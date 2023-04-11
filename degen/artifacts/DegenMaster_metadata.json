@@ -965,11 +965,11 @@
 			]
 		},
 		"degen/DegenMaster.sol": {
-			"keccak256": "0xe39d3bee85ae3fbaa1760f1469ae8a863341b670b96e2256f25abfebd7f82e97",
+			"keccak256": "0x824f5609ff85098fb9328baec929542acd33c23a8d48f2f4f0ffc353e00f86d6",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://d01b46b4995a6382731739c27eb3962137b7507bf1ee8746a1a55da4eaf3a2e2",
-				"dweb:/ipfs/Qmd7ykaeUqAUT9gFYciVNrtHezYJtspDyRu3kBT3xtmQbK"
+				"bzz-raw://217a52878a3efe83f0ab70fcbfc76f54e268008b02ce8618edac13b2debb7974",
+				"dweb:/ipfs/QmcmqZrMtVBpotvx9s7SECauoH5Gytg26rJFrtMBjcXPaV"
 			]
 		},
 		"degen/DegenMoneyLib.sol": {

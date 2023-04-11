@@ -18,7 +18,7 @@ contract DegenMaster is DegenEvents {
     //****************
     // use specific token 
     //**************** 
-    address constant private _rewardTokenAddr = 0xd9145CCE52D386f254917e481eB44e9943F39138; // need to set the token contract addr
+    address constant private _rewardTokenAddr = 0x0fC5025C764cE34df352757e82f7B5c4Df39A836; // need to set the token contract addr
     IERC20 private _rewardToken;
 
     //****************
