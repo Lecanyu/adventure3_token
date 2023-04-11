@@ -18,7 +18,7 @@ contract DegenMaster is DegenEvents {
     //****************
     // use specific token 
     //**************** 
-    address constant private _rewardTokenAddr = 0xDA0bab807633f07f013f94DD0E6A4F96F8742B53; // need to set the token contract addr
+    address constant private _rewardTokenAddr = 0xd9145CCE52D386f254917e481eB44e9943F39138; // need to set the token contract addr
     IERC20 private _rewardToken;
 
     //****************
@@ -234,12 +234,12 @@ contract DegenMaster is DegenEvents {
 
     function getTaskNewestGroupId(uint256 taskId) public view returns (uint256) {
         uint256 newestGroupId = 0;
-        uint256 newestTs = 9999999999;
+        uint256 newestTs = 0;
         for(uint256 i=0; i<_taskId2TokenIds[taskId].length; i++){
             uint256 gid = _tokenId2GroupId[_taskId2TokenIds[taskId][i]];
             uint256 ts = _tidxgid2Detail[taskId][gid].createTimeStamp;
-            if(ts < newestTs){
-                ts = newestTs;
+            if(ts >= newestTs){
+                newestTs = ts;
                 newestGroupId = gid;
             }
         }

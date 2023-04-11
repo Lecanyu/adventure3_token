@@ -295,6 +295,25 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
+						"name": "ticketPrice",
+						"type": "uint256"
+					}
+				],
+				"name": "getCurrentJoinGroupNFTMintFee",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "pure",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
 						"name": "taskId",
 						"type": "uint256"
 					},
@@ -318,6 +337,19 @@
 			{
 				"inputs": [],
 				"name": "getGroupCreateFee",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "pure",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getGroupCreateNFTMintFee",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -763,8 +795,18 @@
 						"type": "address"
 					}
 				],
-				"name": "playerAddr2TokenIds",
+				"name": "playerAddr2TaskIdsGroupIdsTokenIds",
 				"outputs": [
+					{
+						"internalType": "uint256[]",
+						"name": "",
+						"type": "uint256[]"
+					},
+					{
+						"internalType": "uint256[]",
+						"name": "",
+						"type": "uint256[]"
+					},
 					{
 						"internalType": "uint256[]",
 						"name": "",
@@ -772,19 +814,6 @@
 					}
 				],
 				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "string",
-						"name": "name",
-						"type": "string"
-					}
-				],
-				"name": "registerPlayerName",
-				"outputs": [],
-				"stateMutability": "nonpayable",
 				"type": "function"
 			}
 		],
@@ -936,19 +965,19 @@
 			]
 		},
 		"degen/DegenMaster.sol": {
-			"keccak256": "0x5c2cdcb453072b6db3a9900b40e59c61a2681e4296253bd44abc02db3437c301",
+			"keccak256": "0xe39d3bee85ae3fbaa1760f1469ae8a863341b670b96e2256f25abfebd7f82e97",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://4c7e0f3374686e84cf94313d64661e5354a910b76603f0340501d1e141787906",
-				"dweb:/ipfs/Qmd4cXSdRXNgLtxpSCVUSyLbcLXv79jRAvuqkWicR6pZhd"
+				"bzz-raw://d01b46b4995a6382731739c27eb3962137b7507bf1ee8746a1a55da4eaf3a2e2",
+				"dweb:/ipfs/Qmd7ykaeUqAUT9gFYciVNrtHezYJtspDyRu3kBT3xtmQbK"
 			]
 		},
 		"degen/DegenMoneyLib.sol": {
-			"keccak256": "0x3ab8ec722b3bbaa4f45cdab53c95335cf604daf9ed3562d577f8bb5705772829",
+			"keccak256": "0x1d33eb734f40a4104af6b18ad6cce2b693c13babb4288f184d868ce0b9b16a71",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://e9111fe7a28f66af4ed835c6ea705f0269bb405aba2a1db5d4389ade5e1d022c",
-				"dweb:/ipfs/QmbBQ7kru92wEzJhqUcD4m21fo8EowfdHeBa3dMs28JQuu"
+				"bzz-raw://066d7f40f72a553a76b76b1f2e145b4d51ee35ba18f5a146d712725a06aec541",
+				"dweb:/ipfs/QmVwWj23s6LgKBcc9UYFCXL5GcSD9nGynUJjKSZ38fevVB"
 			]
 		},
 		"degen/DegenNFT.sol": {
