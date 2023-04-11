@@ -340,6 +340,10 @@ contract DegenMaster is DegenEvents {
         return DegenMoneyLib.groupCreateMinFee();
     }
 
+    function getGroupCreateNFTMintFee() public pure returns (uint256) {
+        return DegenMoneyLib.groupCreateNFTMintFee();
+    }
+
     function getCurrentJoinGroupPrice(uint256 taskId, uint256 groupId) public view returns (uint256){
         require(isGroupActive(taskId, groupId), "group must be active");
 
@@ -354,7 +358,13 @@ contract DegenMaster is DegenEvents {
         (firstGrpId, SecondGrpId, firstGrpPeopleNum, secondGrpPeopleNum) = getTaskFirstSecondGroup(taskId);
 
         uint256 ticketPrice = DegenMoneyLib.ticketPrice(grpMemNum + 1, _taskId2Detail[taskId].totalRewardPool, firstGrpId, SecondGrpId, firstGrpPeopleNum, secondGrpPeopleNum);
+        
         return ticketPrice;
+    }
+
+    function getCurrentJoinGroupNFTMintFee(uint256 ticketPrice) public pure returns (uint256){
+        uint256 mintFee = DegenMoneyLib.joinGroupNFTMintFee(ticketPrice);
+        return mintFee;
     }
 
     // instant earn
@@ -521,6 +531,9 @@ contract DegenMaster is DegenEvents {
             }
         }
 
+        // reward pool distributed to ad3
+        _rewardToken.transfer(_degenManager, DegenMoneyLib.rewardPool2AD3(totalReward));
+
         // set task reward to 0
         _taskId2Detail[taskId].totalRewardPool = 0;
 
@@ -531,8 +544,6 @@ contract DegenMaster is DegenEvents {
         for(uint256 i=0; i<_taskId2TokenIds[taskId].length; i++){
             _degenNFT.setBurnable(_taskId2TokenIds[taskId][i]);
         }
-
-        // todo: insufficent people refund
     }
 
     //****************
@@ -549,6 +560,7 @@ contract DegenMaster is DegenEvents {
 
         // isPayEnoughForGroupCreate
         require(_rewardToken.transferFrom(msg.sender, address(this), getGroupCreateFee()), string.concat("createGroupFee should be large than ", Strings.toString(getGroupCreateFee())));
+        require(_rewardToken.transferFrom(msg.sender, _degenManager, getGroupCreateNFTMintFee()), string.concat("createGroupNFTMintFee should be large than ", Strings.toString(getGroupCreateNFTMintFee())));
 
         // group id
         uint256 groupId = getTaskGroupNum(affiliateTaskID);
@@ -606,6 +618,7 @@ contract DegenMaster is DegenEvents {
         // isPayEnoughForEnterGroup
         uint256 ticketPrice = getCurrentJoinGroupPrice(affiliateTaskID, groupId);
         require(_rewardToken.transferFrom(msg.sender, address(this), ticketPrice), string.concat("joinGroupFee should be large than ", Strings.toString(ticketPrice)));
+        require(_rewardToken.transferFrom(msg.sender, _degenManager, getCurrentJoinGroupNFTMintFee(ticketPrice)), string.concat("joinGroupNFTMintFee should be large than ", Strings.toString(getCurrentJoinGroupNFTMintFee(ticketPrice))));
 
         // mint a NFT for group member
         uint256 tokenId = _degenNFT.safeMint(msg.sender);

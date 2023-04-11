@@ -12,17 +12,21 @@ library DegenMoneyLib {
     //****************
     // PARAMS
     //****************
-    uint256 constant private _taskCreateMinFee = 1000 * 10**6;
+    uint256 constant private _taskCreateMinFee = 30000 * 10**6;
     uint256 constant private _groupCreateMinFee = 50 * 10**6;
-    uint256 constant private _a = 30;        // 门票金额给队长的比例（%）
+    uint256 constant private _a = 50;        // 门票金额给队长的比例（%）
     uint256 constant private _b = 600;       // 门票金额投入奖池的比例（%）
     uint256 constant private _c = 200;       // 队长的最终奖池收益比例（%）
-    uint256 constant private _p = 100;       // MonopolyPenalty比例（%）
+    uint256 constant private _p = 10;       // MonopolyPenalty比例（%）
     uint256 constant private _v = 10;       // 第一名队伍比第二名队伍人数多_v时，触发MonopolyPenalty
 
     uint256 constant private _alpha = 2;
     uint256 constant private _beta = 10;               // beta = _beta / _denominator
     uint256 constant private _gamma = 5 * 10**6;    // absolute init ticket price threshold
+
+    uint256 constant private _fee_ratio = 75;       // ad3抽取的奖池比例（%）
+    uint256 constant private _NFTMintFeeRatio = 45; // ad3抽取的每次NFT mint费用比例（%）
+
     uint256 constant private _denominator = 1000;
 
     function taskCreateMinFee() public pure returns (uint256 money) {
@@ -33,6 +37,10 @@ library DegenMoneyLib {
         return _groupCreateMinFee;
     }
 
+    function groupCreateNFTMintFee() public pure returns (uint256 money) {
+        return groupCreateMinFee() * _NFTMintFeeRatio / _denominator;
+    }
+
     //****************
     // ticket function
     //****************
@@ -40,7 +48,7 @@ library DegenMoneyLib {
         uint256 ith, 
         uint256 totalRewardPool,
         int256 firstGrpId,
-        int256 SecondGrpId,
+        int256 secondGrpId,
         uint256 firstGrpPeopleNum,
         uint256 secondGrpPeopleNum
     ) 
@@ -72,7 +80,7 @@ library DegenMoneyLib {
         // uint256 tp = _beta * ith ** _alpha * _decimal / _denominator + _gamma;
 
         bool isMonopolyPenalty;
-        if(firstGrpId >= 0 && SecondGrpId >= 0){
+        if(firstGrpId >= 0 && secondGrpId >= 0){
             if(firstGrpPeopleNum - secondGrpPeopleNum > _v){
                 isMonopolyPenalty = true;
             }
@@ -80,7 +88,7 @@ library DegenMoneyLib {
                 isMonopolyPenalty = false;
             }
         }
-        else if (firstGrpId >= 0 && SecondGrpId < 0){
+        else if (firstGrpId >= 0 && secondGrpId < 0){
             if(firstGrpPeopleNum > _v) {
                 isMonopolyPenalty = true;
             }
@@ -105,6 +113,10 @@ library DegenMoneyLib {
         }
 
         return tp;
+    }
+
+    function joinGroupNFTMintFee(uint256 ticketPrice) public pure returns (uint256 price) {
+        return ticketPrice * _NFTMintFeeRatio / _denominator;
     }
 
     function ticketIncome2RewardPool(uint256 ticketIncome) public pure returns (uint256 money) {
@@ -154,6 +166,19 @@ library DegenMoneyLib {
     //****************
     // reward pool function
     //****************
+    function rewardPool2AD3(uint256 totalReward) public pure returns (uint256 money) {
+        // return totalReward * _fee_ratio / _denominator;
+
+        bool flag = false;
+        uint256 m = 0;
+        (flag, m) = SafeMath.tryMul(totalReward, _fee_ratio);
+        require(flag, "[rewardPool2AD3] overflow.");
+        (flag, m) = SafeMath.tryDiv(m, _denominator);
+        require(flag, "[rewardPool2AD3] overflow.");
+
+        return m;
+    }
+
     function rewardPool2GroupLeader(uint256 totalReward) public pure returns (uint256 money) {
         // return totalReward * _c / _denominator;
 
@@ -168,12 +193,14 @@ library DegenMoneyLib {
     }
 
     function rewardPool2GroupMember(uint256 totalReward, uint256 memNum) public pure returns (uint256 money) {
-        // return ticketIncome * (_denominator - _c) / _denominator / memNum;
+        // return ticketIncome * (_denominator - _c - _fee_ratio) / _denominator / memNum;
 
         bool flag = false;
         uint256 m = 0;
         uint256 c = 0;
         (flag, c) = SafeMath.trySub(_denominator, _c);
+        require(flag, "[rewardPool2GroupMember] overflow.");
+        (flag, c) = SafeMath.trySub(c, _fee_ratio);
         require(flag, "[rewardPool2GroupMember] overflow.");
         (flag, m) = SafeMath.tryMul(totalReward, c);
         require(flag, "[rewardPool2GroupMember] overflow.");
