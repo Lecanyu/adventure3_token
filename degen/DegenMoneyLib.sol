@@ -26,6 +26,7 @@ library DegenMoneyLib {
 
     uint256 constant private _fee_ratio = 75;       // ad3抽取的奖池比例（%）
     uint256 constant private _NFTMintFeeRatio = 45; // ad3抽取的每次NFT mint费用比例（%）
+    uint256 constant private _NFTDestroyFeeRatio = 45; // ad3抽取的每次NFT destroy费用比例（%）
 
     uint256 constant private _denominator = 1000;
 
